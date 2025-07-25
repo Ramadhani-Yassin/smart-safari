@@ -1,0 +1,31 @@
+<header class="navbar">
+  <div class="logo">🚖 Smart Safari</div>
+  <nav>
+    <a (click)="redirectToHome()">Home</a>
+    <a (click)="redirectToLogin()">Login</a>
+    <a (click)="redirectToSignup()">Register</a>
+    <a (click)="redirectToSupport()">Support</a>
+  </nav>
+</header>
+
+<!-- signup form follows -->
+<div class="auth-container">
+  <div class="card">
+    <h2 class="title">Create Account 🚀</h2>
+    <p class="subtitle">Join Smart Safari and ride smarter</p>
+
+    <div class="input-group">
+      <input (ngModel)="name" placeholder="👤 Full Name" type="text" class="input" required>
+      <input (ngModel)="email" placeholder="📧 Email" type="email" class="input" required>
+      <input (ngModel)="password" placeholder="🔒 Password" type="password" class="input" required>
+    </div>
+
+    <label class="checkbox">
+      <input type="checkbox" (ngModel)="isDriver"> Registering as a Driver
+    </label>
+
+    <button class="btn" (click)="onSignup()">Sign Up</button>
+
+    <p class="link-text">Already have an account? <a routerLink="/login">Login</a></p>
+  </div>
+</div>

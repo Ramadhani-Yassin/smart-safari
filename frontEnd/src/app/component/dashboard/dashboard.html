@@ -1,0 +1,70 @@
+<div class="dashboard">
+  <aside class="sidebar" [class.collapsed]="sidebarCollapsed">
+    <div class="sidebar-brand">
+      <img src="assets/logo.png" alt="SmartSafari Logo">
+      <h2 *ngIf="!sidebarCollapsed">SmartSafari</h2>
+      <button class="collapse-btn" (click)="toggleSidebar()">
+        <i class="fas" [ngClass]="sidebarCollapsed ? 'fa-chevron-right' : 'fa-chevron-left'"></i>
+      </button>
+    </div>
+    <nav>
+      <a *ngFor="let item of menu; let i = index"
+         [class.active]="activeMenu === i"
+         (click)="setActiveMenu(i)">
+        <i [class]="item.icon"></i>
+        <span *ngIf="!sidebarCollapsed">{{ item.label }}</span>
+      </a>
+    </nav>
+    <div class="driver-profile" *ngIf="!sidebarCollapsed">
+      <img src="https://i.pravatar.cc/150?img=12" alt="Driver">
+      <div>
+        <strong>{{ driver.name }}</strong>
+        <span><i class="fas fa-star"></i> {{ driver.rating }} ({{ driver.rides }})</span>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <section *ngIf="activeMenu === 0">
+      <h2>Bookings</h2>
+      <div *ngFor="let booking of bookings" class="card">
+        <h4>{{ booking.title }}</h4>
+        <p>Status: {{ booking.status }}</p>
+        <p>Pickup: {{ booking.pickup }}</p>
+        <p>Dropoff: {{ booking.dropoff }}</p>
+        <span class="time">{{ booking.time }}</span>
+      </div>
+      
+    </section>
+    <section *ngIf="activeMenu === 1" class="map">
+      <i class="fas fa-map-marked-alt"></i>
+      <p>Live Map View</p>
+    </section>
+    <section *ngIf="activeMenu === 2">
+      <h2>Ride Status</h2>
+      <div class="card">
+        <h4>Current Ride</h4>
+        <p *ngIf="rideStatus.active">Status: <span class="active">Active</span></p>
+        <p *ngIf="!rideStatus.active">No active ride.</p>
+        <p *ngIf="rideStatus.active">From: {{ rideStatus.from }}<br>To: {{ rideStatus.to }}</p>
+        <p *ngIf="rideStatus.active">Started: {{ rideStatus.startTime }}</p>
+      </div>
+    </section>
+    <section *ngIf="activeMenu === 3">
+      <h2>Profile</h2>
+      <div class="card profile-card">
+        <div>
+          <app-profile></app-profile>
+        </div>
+      </div>
+    </section>
+    <section *ngIf="activeMenu === 4">
+      <h2>Payments</h2>
+      <div *ngFor="let payment of payments" class="card">
+        <h4>{{ payment.date }}</h4>
+        <p>Amount: {{ payment.amount }}</p>
+        <p>Status: <span [ngClass]="payment.status">{{ payment.status | titlecase }}</span></p>
+      </div>
+    </section>
+  </main>
+</div>

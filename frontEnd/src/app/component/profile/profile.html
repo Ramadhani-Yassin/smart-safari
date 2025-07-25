@@ -1,0 +1,33 @@
+<div class="profile-wrapper">
+  <div class="card">
+    <img [src]="user.avatar" alt="User Avatar" class="avatar" />
+    
+    <h2>👋 Hi, {{ user.name }}</h2>
+    <p class="email">📧 {{ user.email }}</p>
+    
+    <span class="role-badge" [ngClass]="user.isDriver ? 'driver' : 'passenger'">
+      {{ user.isDriver ? '🚗 Driver' : '🙋‍♂️ Passenger' }}
+    </span>
+
+    <div class="stats">
+      <div>
+        <h3>{{ user.stats.trips }}</h3>
+        <p>Trips</p>
+      </div>
+      <div>
+        <h3>⭐ {{ user.stats.rating }}</h3>
+        <p>Rating</p>
+      </div>
+      <div>
+        <h3>{{ user.stats.memberSince }}</h3>
+        <p>Member Since</p>
+      </div>
+    </div>
+
+    <div class="buttons">
+      <button (click)="goToBooking()">📍 Change Profile</button>
+      <button (click)="viewTrips()">🧾 Change Password</button>
+      <button class="logout" (click)="logout()">🚪 Logout</button>
+    </div>
+  </div>
+</div>

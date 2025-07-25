@@ -1,0 +1,85 @@
+<!-- Navigation Bar -->
+<header class="navbar">
+  <div class="logo">🚖 Smart Safari</div>
+  <nav>
+    <a (click)="redirectToHome()">Home</a>
+    <a (click)="redirectToLogin()">Login</a>
+    <a (click)="redirectToSupport()">Support</a>
+  </nav>
+</header>
+
+<!-- Hero Section -->
+<section class="hero">
+  <div class="hero-text">
+    <h1>Ride Smarter with Smart Safari</h1>
+    <p>Your reliable taxi booking service across Zanzibar 🌴</p>
+    <button (click)="redirectToLogin()">Get Started</button>
+  </div>
+</section>
+
+<!-- Services Section -->
+<section class="services">
+  <h2>Our Services</h2>
+  <div class="service-cards">
+    <div class="card" (click)="redirectToLogin()">
+      <h3>🚕 Book a Taxi</h3>
+      <p>Find nearby taxis and request a ride instantly.</p>
+    </div>
+    <div class="card" (click)="redirectToSignup()">
+      <h3>🧍 Become a Driver</h3>
+      <p>Join our platform and earn by driving.</p>
+    </div>
+    <div class="card" (click)="redirectToLogin()">
+      <h3>📍 Track Ride</h3>
+      <p>Track your trip status and driver's location in real-time.</p>
+    </div>
+  </div>
+</section>
+
+<!-- About Section -->
+<section class="about">
+  <h2>Why Choose Smart Safari?</h2>
+  <ul>
+    <li>✅ Easy & Fast Booking</li>
+    <li>✅ Trusted Drivers</li>
+    <li>✅ Affordable Rides</li>
+    <li>✅ 24/7 Customer Support</li>
+  </ul>
+</section>
+
+<!-- Contact Us Section -->
+<section class="contact">
+  <h2>📬 Contact Us</h2>
+  <p>If you have any questions or feedback, we'd love to hear from you!</p>
+
+  <form (ngSubmit)="submitContact()" #contactForm="ngForm">
+    <input
+      type="text"
+      name="name"
+      ngModel
+      placeholder="Your Name"
+      required
+    />
+    <input
+      type="email"
+      name="email"
+      ngModel
+      placeholder="Your Email"
+      required
+    />
+    <textarea
+      name="message"
+      ngModel
+      rows="5"
+      placeholder="Your Message"
+      required
+    ></textarea>
+    <button type="submit">Send Message</button>
+  </form>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <p>&copy; 2025 Smart Safari. All rights reserved.</p>
+</footer>
+

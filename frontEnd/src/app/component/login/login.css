@@ -1,0 +1,224 @@
+.auth-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: white;
+  font-family: 'Segoe UI', sans-serif;
+  animation: gradientBG 15s ease infinite;
+  background-size: 400% 400%;
+}
+
+
+/* Navigation Bar */
+.navbar {
+  background-color: #004aad;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 40px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  
+}
+
+.navbar .logo {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.navbar nav a {
+  color: white;
+  margin-left: 20px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.navbar nav a:hover {
+  color: #ffc107;
+}
+
+
+.card {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 2.5rem;
+  border-radius: 20px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 420px;
+  text-align: center;
+  animation: fadeInUp 0.8s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+}
+
+.title {
+  margin-bottom: 0.5rem;
+  font-size: 2.2rem;
+  color: #2c3e50;
+  font-weight: 700;
+  background: linear-gradient(to right, #667eea, #764ba2);
+  background-clip: text;
+  -webkit-background-clip: text;
+
+}
+
+.subtitle {
+  margin-bottom: 2rem;
+  font-size: 1.1rem;
+  color: #7f8c8d;
+  font-weight: 400;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.input {
+  padding: 1rem;
+  border-radius: 12px;
+  border: 2px solid #e0e0e0;
+  font-size: 1rem;
+  transition: all 0.3s;
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.input:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+  transform: scale(1.02);
+}
+
+.checkbox {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  font-size: 0.9rem;
+  color: #7f8c8d;
+  margin-bottom: 1.5rem;
+  gap: 0.5rem;
+}
+
+.btn {
+  width: 100%;
+  padding: 1rem;
+  background: linear-gradient(to right, #667eea, #764ba2);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+.btn::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to right, #764ba2, #667eea);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.btn:hover::after {
+  opacity: 1;
+}
+
+.link-text {
+  margin-top: 1.5rem;
+  font-size: 0.95rem;
+  color: #7f8c8d;
+}
+
+.link-text a {
+  color: #667eea;
+  text-decoration: none;
+  font-weight: 600;
+  position: relative;
+}
+
+.link-text a::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: #764ba2;
+  transition: width 0.3s;
+}
+
+.link-text a:hover::after {
+  width: 100%;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes gradientBG {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Floating animation for subtle movement */
+@keyframes floating {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+/* Add this if you want the card to float */
+.floating-card {
+  animation: floating 6s ease-in-out infinite;
+}

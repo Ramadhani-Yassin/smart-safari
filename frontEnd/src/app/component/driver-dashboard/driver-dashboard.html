@@ -1,0 +1,24 @@
+<div class="dashboard">
+  <h2>🚗 Welcome, {{ driver.name }}</h2>
+
+  <div class="driver-info">
+    <p><strong>Vehicle:</strong> {{ driver.vehicle }}</p>
+    <p><strong>Total Trips:</strong> {{ driver.totalTrips }}</p>
+    <p><strong>Rating:</strong> ⭐ {{ driver.rating }}</p>
+  </div>
+
+  <h3 class="section-title">📍 Nearby Ride Requests</h3>
+
+  <div *ngIf="rideRequests.length; else noRequests">
+    <div class="request-card" *ngFor="let request of rideRequests">
+      <p><strong>Passenger:</strong> {{ request.passenger }}</p>
+      <p><strong>Pickup:</strong> {{ request.pickup }}</p>
+      <p><strong>Destination:</strong> {{ request.destination }}</p>
+      <button (click)="acceptRide(request.id)">✅ Accept Ride</button>
+    </div>
+  </div>
+
+  <ng-template #noRequests>
+    <p class="no-requests">🚫 No ride requests available at the moment.</p>
+  </ng-template>
+</div>

@@ -1,0 +1,60 @@
+.dashboard {
+  max-width: 700px;
+  margin: auto;
+  padding: 30px;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.driver-info {
+  background: #f5f5f5;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 30px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.section-title {
+  font-size: 18px;
+  margin-bottom: 15px;
+  border-left: 4px solid #007bff;
+  padding-left: 10px;
+  color: #333;
+}
+
+.request-card {
+  background: #e3f2fd;
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 15px;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
+}
+
+.request-card p {
+  margin: 5px 0;
+}
+
+.request-card button {
+  margin-top: 10px;
+  padding: 8px 12px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.request-card button:hover {
+  background-color: #218838;
+}
+
+.no-requests {
+  text-align: center;
+  color: #777;
+  font-style: italic;
+}

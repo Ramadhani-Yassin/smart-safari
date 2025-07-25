@@ -1,0 +1,41 @@
+<header class="navbar">
+    <div class="logo">🚖 Smart Safari</div>
+    <nav>
+      <a (click)="redirectToHome()">Home</a>
+      <a (click)="redirectToLogin()">Login</a>
+      <a (click)="redirectToSupport()">Support</a>
+    </nav>
+  </header>
+
+
+<div class="support-container">
+  <h2>Contact Support</h2>
+  <p class="subtitle">We're here to help! Reach out to us with any questions, issues, or feedback.</p>
+
+  <div class="contact-details">
+    <div class="contact-item">
+      <span class="icon">📧</span>
+      <span>Email: <a href="mailto:support&#64;smartsafari.com">support&#64;smartsafari.com</a></span>
+    </div>
+    <div class="contact-item">
+      <span class="icon">📞</span>
+      <span>Phone: <a href="tel:+255774444444">+255 774 444 444</a></span>
+    </div>
+    <div class="contact-item">
+      <span class="icon">🏢</span>
+      <span>Address: 123 Safari Lane, Zanzibar, TZ</span>
+    </div>
+    <div class="contact-item">
+      <span class="icon">⏰</span>
+      <span>Hours: 24/7 Support</span>
+    </div>
+  </div>
+
+  <form class="support-form">
+    <h3>Send us a message</h3>
+    <input type="text" placeholder="Your Name" required />
+    <input type="email" placeholder="Your Email" required />
+    <textarea rows="5" placeholder="How can we help you?" required></textarea>
+    <button type="submit">Send Message</button>
+  </form>
+</div>
