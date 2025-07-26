@@ -7,6 +7,7 @@ import com.smart.safais.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -77,5 +78,25 @@ public class UserService {
      */
     public Optional<User> findById(Long id) {
         return userRepository.findById(id);
+    }
+    
+    /**
+     * Get count of customers
+     * @return number of customers
+     */
+    public long getCustomerCount() {
+        return userRepository.countByRole("USER");
+    }
+    
+    /**
+     * Get count of drivers
+     * @return number of drivers
+     */
+    public long getDriverCount() {
+        return userRepository.countByRole("DRIVER");
+    }
+
+    public List<User> getUsersByRole(String role) {
+        return userRepository.findByRole(role);
     }
 } 

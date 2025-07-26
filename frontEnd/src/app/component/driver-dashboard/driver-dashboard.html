@@ -22,7 +22,9 @@
     </nav>
 
     <div class="driver-profile" *ngIf="!sidebarCollapsed">
-      <img [src]="driver.avatar" alt="Driver Profile">
+      <div class="profile-avatar">
+        <i class="fas fa-user"></i>
+      </div>
       <div class="profile-info">
         <strong>{{ driver.name }}</strong>
         <span class="rating">⭐ {{ driver.rating }} ({{ driver.totalTrips }} trips)</span>
@@ -39,7 +41,7 @@
   </aside>
 
   <!-- Main Content -->
-  <main class="main-content">
+  <main class="main-content" [class.sidebar-collapsed]="sidebarCollapsed">
     <!-- Header -->
     <header class="main-header">
       <div class="header-left">
@@ -56,7 +58,7 @@
         </div>
         <div class="notifications">
           <i class="fas fa-bell"></i>
-          <span class="badge" *ngIf="notifications.length > 0">{{ notifications.length }}</span>
+          <span class="badge" *ngIf="pendingRidesCount > 0">{{ pendingRidesCount }}</span>
         </div>
       </div>
     </header>
@@ -77,11 +79,11 @@
           </div>
           <div class="stat-card">
             <div class="stat-icon">
-              <i class="fas fa-star"></i>
+              <i class="fas fa-car"></i>
             </div>
             <div class="stat-info">
-              <h3>{{ driver.rating }}</h3>
-              <p>Rating</p>
+              <h3>{{ totalRides }}</h3>
+              <p>Active Rides</p>
             </div>
           </div>
           <div class="stat-card">
@@ -89,8 +91,17 @@
               <i class="fas fa-money-bill-wave"></i>
             </div>
             <div class="stat-info">
-              <h3>TZS  {{ driver.earnings }}</h3>
-              <p>Today's Earnings</p>
+              <h3>{{ formatCurrency(totalEarnings) }}</h3>
+              <p>Total Earnings</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">
+              <i class="fas fa-star"></i>
+            </div>
+            <div class="stat-info">
+              <h3>{{ driver.rating }}</h3>
+              <p>Rating</p>
             </div>
           </div>
         </div>
@@ -98,140 +109,239 @@
         <div class="ride-requests">
           <div class="section-header">
             <h2>📍 Available Ride Requests</h2>
-            <span class="request-count">{{ rideRequests.length }} new requests</span>
+            <span class="request-count">{{ pendingRidesCount }} requests</span>
           </div>
-          <div class="requests-grid" *ngIf="rideRequests.length; else noRequests">
+          <div class="requests-grid" *ngIf="!isLoadingRequests && rideRequests.length; else noRequests">
             <div class="request-card" *ngFor="let request of rideRequests">
-              <div class="request-badge">NEW REQUEST</div>
+              <div class="request-badge pending">Pending</div>
               <div class="request-header">
                 <div class="passenger-info">
-                  <img [src]="request.passengerAvatar" alt="Passenger">
+                  <div class="passenger-avatar">
+                    <i class="fas fa-user"></i>
+                  </div>
                   <div>
-                    <h4>{{ request.passenger }}</h4>
-                    <span class="rating">⭐ {{ request.passengerRating }}</span>
+                    <h4>{{ request.customer.name || 'Passenger' }}</h4>
+                    <span class="rating">⭐ {{ request.customer.rating || 'New' }}</span>
                   </div>
                 </div>
-                <div class="request-time">{{ request.time }}</div>
+                <div class="request-time">{{ formatDate(request.createdAt) }}</div>
               </div>
               <div class="request-details">
                 <div class="location">
                   <i class="fas fa-map-marker-alt pickup"></i>
-                  <span>{{ request.pickup }}</span>
+                  <span>{{ request.route.origin || 'Pickup Location' }}</span>
                 </div>
                 <div class="location">
                   <i class="fas fa-map-marker-alt destination"></i>
-                  <span>{{ request.destination }}</span>
+                  <span>{{ request.route.destination || 'Destination' }}</span>
                 </div>
                 <div class="fare">
                   <i class="fas fa-dollar-sign"></i>
-                  <span>{{ request.fare }}</span>
+                  <span>{{ formatCurrency(request.route.price) }}</span>
                 </div>
               </div>
               <div class="request-actions">
-                <button class="btn btn-accept" (click)="acceptRide(request.id)">
+                <button class="btn btn-accept" (click)="acceptRide(request.id!)">
                   <i class="fas fa-check"></i> Accept
                 </button>
-                <button class="btn btn-decline" (click)="declineRide(request.id)">
+                <button class="btn btn-decline" (click)="declineRide(request.id!)">
                   <i class="fas fa-times"></i> Decline
                 </button>
               </div>
             </div>
           </div>
           <ng-template #noRequests>
-            <div class="no-requests">
-              <i class="fas fa-search"></i>
-              <p>No ride requests available at the moment</p>
-              <span>We'll notify you when new requests come in</span>
+            <div class="no-requests" *ngIf="!isLoadingRequests">
+              <i class="fas fa-car"></i>
+              <p>No ride requests available</p>
+              <span>Stay online to receive new requests</span>
+            </div>
+            <div class="loading-requests" *ngIf="isLoadingRequests">
+              <i class="fas fa-spinner fa-spin"></i>
+              <p>Loading ride requests...</p>
             </div>
           </ng-template>
         </div>
       </section>
 
-      <!-- Active Rides -->
-      <section *ngIf="activeMenu === 1" class="active-rides">
-        <h2>🚗 Active Rides</h2>
-        <div class="rides-grid" *ngIf="activeRides.length; else noActiveRides">
+      <!-- Ride Requests Section -->
+      <section *ngIf="activeMenu === 1" class="ride-requests-section">
+        <div class="section-header">
+          <h2>🚗 Ride Requests</h2>
+          <div class="header-actions">
+            <button class="btn btn-refresh" (click)="loadRideRequests()" [disabled]="isLoadingRequests">
+              <i class="fas fa-sync-alt" [class.fa-spin]="isLoadingRequests"></i>
+              {{ isLoadingRequests ? 'Loading...' : 'Refresh' }}
+            </button>
+            <span class="request-count">{{ pendingRidesCount }} pending</span>
+          </div>
+        </div>
+        <div class="requests-grid" *ngIf="!isLoadingRequests && rideRequests.length; else noRequestsSection">
+          <div class="request-card" *ngFor="let request of rideRequests">
+            <div class="request-badge pending">Pending</div>
+            <div class="request-header">
+              <div class="passenger-info">
+                <div class="passenger-avatar">
+                  <i class="fas fa-user"></i>
+                </div>
+                <div>
+                  <h4>{{ request.customer.name || 'Passenger' }}</h4>
+                  <span class="rating">⭐ {{ request.customer.rating || 'New' }}</span>
+                </div>
+              </div>
+              <div class="request-time">{{ formatDate(request.createdAt) }}</div>
+            </div>
+            <div class="request-details">
+              <div class="location">
+                <i class="fas fa-map-marker-alt pickup"></i>
+                <span>{{ request.route.origin || 'Pickup Location' }}</span>
+              </div>
+              <div class="location">
+                <i class="fas fa-map-marker-alt destination"></i>
+                <span>{{ request.route.destination || 'Destination' }}</span>
+              </div>
+              <div class="fare">
+                <i class="fas fa-dollar-sign"></i>
+                <span>{{ formatCurrency(request.route.price) }}</span>
+              </div>
+            </div>
+            <div class="request-actions">
+              <button class="btn btn-accept" (click)="acceptRide(request.id!)">
+                <i class="fas fa-check"></i> Accept
+              </button>
+              <button class="btn btn-decline" (click)="declineRide(request.id!)">
+                <i class="fas fa-times"></i> Decline
+              </button>
+            </div>
+          </div>
+        </div>
+        <ng-template #noRequestsSection>
+          <div class="no-requests" *ngIf="!isLoadingRequests">
+            <i class="fas fa-car"></i>
+            <p>No ride requests available</p>
+            <span>Stay online to receive new requests</span>
+          </div>
+          <div class="loading-requests" *ngIf="isLoadingRequests">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Loading ride requests...</p>
+          </div>
+        </ng-template>
+      </section>
+
+      <!-- Active Rides Section -->
+      <section *ngIf="activeMenu === 2" class="active-rides-section">
+        <h2>🚀 Active Rides</h2>
+        <div class="rides-grid" *ngIf="!isLoadingRides && activeRides.length; else noActiveRides">
           <div class="ride-card" *ngFor="let ride of activeRides">
             <div class="ride-header">
-              <h3>Ride #{{ ride.id }}</h3>
-              <span class="status" [class]="ride.status">{{ ride.status }}</span>
+              <h3>{{ ride.route.origin }} → {{ ride.route.destination }}</h3>
+              <div class="status" [class]="getStatusClass(ride.status)">
+                <span *ngIf="ride.status === 'ON_WAY'">ON WAY</span>
+                <span *ngIf="ride.status === 'IN_PROGRESS'">IN PROGRESS</span>
+                <span *ngIf="ride.status === 'COMPLETED'">COMPLETED</span>
+                <span *ngIf="ride.status === 'PENDING'">PENDING</span>
+                <span *ngIf="ride.status === 'DECLINED'">DECLINED</span>
+                <span *ngIf="ride.status === 'PAID'">PAID</span>
+              </div>
             </div>
             <div class="ride-details">
               <div class="passenger">
-                <img [src]="ride.passengerAvatar" alt="Passenger">
+                <div class="passenger-avatar">
+                  <i class="fas fa-user"></i>
+                </div>
                 <div>
-                  <h4>{{ ride.passenger }}</h4>
-                  <span>{{ ride.phone }}</span>
+                  <h4>{{ ride.customer.name || 'Passenger' }}</h4>
+                  <span>{{ ride.customer.phone || 'N/A' }}</span>
                 </div>
               </div>
               <div class="route">
                 <div class="location">
                   <i class="fas fa-map-marker-alt pickup"></i>
-                  <span>{{ ride.pickup }}</span>
+                  <span>{{ ride.route.origin }}</span>
                 </div>
                 <div class="location">
                   <i class="fas fa-map-marker-alt destination"></i>
-                  <span>{{ ride.destination }}</span>
+                  <span>{{ ride.route.destination }}</span>
                 </div>
               </div>
               <div class="ride-info">
-                <span><i class="fas fa-clock"></i> {{ ride.startTime }}</span>
-                <span><i class="fas fa-dollar-sign"></i> {{ ride.fare }}</span>
+                <div class="fare">
+                  <i class="fas fa-dollar-sign"></i>
+                  <span>{{ formatCurrency(ride.route.price) }}</span>
+                </div>
+                <div class="time">
+                  <i class="fas fa-clock"></i>
+                  <span>{{ formatDate(ride.scheduledTime) }}</span>
+                </div>
               </div>
             </div>
             <div class="ride-actions">
-              <button class="btn btn-primary" (click)="startRide(ride.id)" *ngIf="ride.status === 'accepted'">
+              <button class="btn btn-primary" (click)="startRide(ride.id!)" *ngIf="ride.status === 'ACCEPTED'">
                 <i class="fas fa-play"></i> Start Ride
               </button>
-              <button class="btn btn-success" (click)="completeRide(ride.id)" *ngIf="ride.status === 'in-progress'">
-                <i class="fas fa-flag-checkered"></i> Complete Ride
+              <button class="btn btn-success" (click)="completeRide(ride.id!)" *ngIf="ride.status === 'IN_PROGRESS'">
+                <i class="fas fa-check"></i> Complete Ride
               </button>
-              <button class="btn btn-info" (click)="contactPassenger(ride.id)">
+              <button class="btn btn-info" (click)="contactPassenger(ride.id!)">
                 <i class="fas fa-phone"></i> Contact
               </button>
             </div>
           </div>
         </div>
         <ng-template #noActiveRides>
-          <div class="no-rides">
-            <i class="fas fa-car"></i>
-            <p>No active rides at the moment</p>
-            <span>Accept ride requests to get started</span>
+          <div class="no-rides" *ngIf="!isLoadingRides">
+            <i class="fas fa-route"></i>
+            <p>No active rides</p>
+            <span>Accept ride requests to start driving</span>
+          </div>
+          <div class="loading-rides" *ngIf="isLoadingRides">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Loading active rides...</p>
           </div>
         </ng-template>
       </section>
 
-      <!-- Earnings -->
-      <section *ngIf="activeMenu === 2" class="earnings">
+      <!-- Earnings Section -->
+      <section *ngIf="activeMenu === 3" class="earnings-section">
         <h2>💰 Earnings</h2>
         <div class="earnings-overview">
           <div class="earnings-card">
-            <h3>Today's Earnings</h3>
-            <div class="amount">TZS  {{ driver.earnings }}</div>
+            <h3>Total Earnings</h3>
+            <div class="amount">{{ formatCurrency(totalEarnings) }}</div>
             <div class="progress">
               <div class="progress-bar" [style.width.%]="earningsProgress"></div>
             </div>
-            <p>Goal: TZS  100</p>
+            <p>Progress towards daily goal</p>
           </div>
           <div class="earnings-stats">
             <div class="stat">
-              <span class="label">This Week</span>
-              <span class="value">TZS  {{ weeklyEarnings }}</span>
+              <span class="label">Weekly Earnings</span>
+              <span class="value">{{ formatCurrency(weeklyEarnings) }}</span>
             </div>
             <div class="stat">
-              <span class="label">This Month</span>
-              <span class="value">TZS  {{ monthlyEarnings }}</span>
+              <span class="label">Monthly Earnings</span>
+              <span class="value">{{ formatCurrency(monthlyEarnings) }}</span>
+            </div>
+            <div class="stat">
+              <span class="label">Completed Rides</span>
+              <span class="value">{{ completedRidesCount }}</span>
+            </div>
+            <div class="stat">
+              <span class="label">Total Trips</span>
+              <span class="value">{{ driver.totalTrips }}</span>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- Profile -->
-      <section *ngIf="activeMenu === 3" class="profile">
+      <!-- Profile Section -->
+      <section *ngIf="activeMenu === 4" class="profile-section">
         <h2>👤 Profile</h2>
         <div class="profile-card">
           <div class="profile-header">
-            <img [src]="driver.avatar" alt="Driver Profile">
+            <div class="profile-avatar">
+              <i class="fas fa-user"></i>
+            </div>
             <div class="profile-info">
               <h3>{{ driver.name }}</h3>
               <p>{{ driver.email }}</p>
@@ -255,10 +365,12 @@
               <span class="label">Total Trips</span>
               <span class="value">{{ driver.totalTrips }}</span>
             </div>
-          </div>
-          <div class="profile-actions">
-            <button class="btn btn-primary">Edit Profile</button>
-            <button class="btn btn-secondary">Change Password</button>
+            <div class="detail">
+              <span class="label">Status</span>
+              <span class="value" [class.online]="driver.isOnline">
+                ● {{ driver.isOnline ? 'Online' : 'Offline' }}
+              </span>
+            </div>
           </div>
         </div>
       </section>

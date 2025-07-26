@@ -39,7 +39,7 @@
   </aside>
 
   <!-- Main Content -->
-  <main class="main-content">
+  <main class="main-content" [class.sidebar-collapsed]="sidebarCollapsed">
     <!-- Header -->
     <header class="main-header">
       <div class="header-left">
@@ -48,47 +48,58 @@
       </div>
       <div class="header-right">
         <div class="quick-actions">
-          <button class="btn btn-primary" (click)="bookRide()">
-            <i class="fas fa-plus"></i> Book New Ride
+          <button class="btn btn-primary" (click)="setActiveMenu(1)">
+            <i class="fas fa-route"></i> Browse Routes
           </button>
-        </div>
-        <div class="notifications">
-          <i class="fas fa-bell"></i>
-          <span class="badge" *ngIf="notifications.length > 0">{{ notifications.length }}</span>
         </div>
       </div>
     </header>
 
-    <!-- Dashboard Content -->
-    <div class="content">
-      <!-- Dashboard Overview -->
-      <section *ngIf="activeMenu === 0" class="dashboard-overview">
-        <div class="stats-grid">
-          <div class="stat-card">
-            <div class="stat-icon">
-              <i class="fas fa-route"></i>
+          <!-- Dashboard Content -->
+      <div class="content">
+        <!-- Dashboard Overview -->
+        <section *ngIf="activeMenu === 0" class="dashboard-overview">
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-icon">
+                <i class="fas fa-route"></i>
+              </div>
+              <div class="stat-info">
+                <h3>{{ totalRides }}</h3>
+                <p>Total Rides</p>
+              </div>
             </div>
-            <div class="stat-info">
-              <h3>{{ user.totalRides }}</h3>
-              <p>Total Rides</p>
+            <div class="stat-card">
+              <div class="stat-icon">
+                <i class="fas fa-star"></i>
+              </div>
+              <div class="stat-info">
+                <h3>{{ availableRoutes }}</h3>
+                <p>Available Routes</p>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">
+                <i class="fas fa-wallet"></i>
+              </div>
+              <div class="stat-info">
+                <h3>{{ formatCurrency(totalSpent) }}</h3>
+                <p>Total Spent</p>
+              </div>
             </div>
           </div>
-          <div class="stat-card">
-            <div class="stat-icon">
-              <i class="fas fa-star"></i>
+
+        <div class="quick-actions-section">
+          <div class="quick-action-card">
+            <div class="action-content">
+              <h3>Ready to Book a Ride?</h3>
+              <p>Browse available routes and book your next journey with just a few clicks.</p>
+              <button class="btn btn-primary action-btn" (click)="setActiveMenu(1)">
+                <i class="fas fa-route"></i> Browse Available Routes
+              </button>
             </div>
-            <div class="stat-info">
-              <h3>{{ user.rating }}</h3>
-              <p>Rating</p>
-            </div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-icon">
-              <i class="fas fa-wallet"></i>
-            </div>
-            <div class="stat-info">
-              <h3>TZS  {{ user.totalSpent }}</h3>
-              <p>Total Spent</p>
+            <div class="action-icon">
+              <i class="fas fa-car"></i>
             </div>
           </div>
         </div>
@@ -100,36 +111,46 @@
           </div>
           <div class="bookings-grid" *ngIf="bookings.length; else noBookings">
             <div class="booking-card" *ngFor="let booking of bookings">
-              <div class="booking-badge" [class]="booking.status">{{ booking.status }}</div>
+              <div class="booking-badge" [class]="getStatusClass(booking.status)">
+                <span *ngIf="booking.status === 'PENDING'">PENDING</span>
+                <span *ngIf="booking.status === 'ON_WAY'">ON WAY</span>
+                <span *ngIf="booking.status === 'IN_PROGRESS'">IN PROGRESS</span>
+                <span *ngIf="booking.status === 'COMPLETED'">COMPLETED</span>
+                <span *ngIf="booking.status === 'PAID'">PAID</span>
+                <span *ngIf="booking.status === 'DECLINED'">DECLINED</span>
+              </div>
               <div class="booking-header">
                 <div class="booking-info">
-                  <h4>{{ booking.title }}</h4>
+                  <h4>{{ booking.route.origin }} → {{ booking.route.destination }}</h4>
                   <span class="booking-id">#{{ booking.id }}</span>
                 </div>
-                <div class="booking-time">{{ booking.time }}</div>
+                <div class="booking-time">{{ formatDate(booking.createdAt!) }}</div>
               </div>
               <div class="booking-details">
                 <div class="location">
                   <i class="fas fa-map-marker-alt pickup"></i>
-                  <span>{{ booking.pickup }}</span>
+                  <span>{{ booking.route.origin }}</span>
                 </div>
                 <div class="location">
                   <i class="fas fa-map-marker-alt destination"></i>
-                  <span>{{ booking.dropoff }}</span>
+                  <span>{{ booking.route.destination }}</span>
                 </div>
                 <div class="fare">
                   <i class="fas fa-dollar-sign"></i>
-                  <span>{{ booking.fare }}</span>
+                  <span>{{ formatCurrency(booking.route.price) }}</span>
                 </div>
               </div>
               <div class="booking-actions">
-                <button class="btn btn-primary" (click)="trackRide(booking.id)" *ngIf="booking.status === 'confirmed'">
-                  <i class="fas fa-location-arrow"></i> Track Ride
+                <button class="btn btn-primary" (click)="makePayment(booking)" *ngIf="canMakePayment(booking)">
+                  <i class="fas fa-credit-card"></i> Make Payment
                 </button>
-                <button class="btn btn-success" (click)="rateRide(booking.id)" *ngIf="booking.status === 'completed'">
+                <button class="btn btn-success" *ngIf="booking.status === 'PAID'" disabled>
+                  <i class="fas fa-check"></i> ALREADY PAID
+                </button>
+                <button class="btn btn-success" *ngIf="booking.status === 'COMPLETED'">
                   <i class="fas fa-star"></i> Rate Ride
                 </button>
-                <button class="btn btn-info" (click)="viewDetails(booking.id)">
+                <button class="btn btn-info">
                   <i class="fas fa-eye"></i> Details
                 </button>
               </div>
@@ -139,73 +160,169 @@
             <div class="no-bookings">
               <i class="fas fa-calendar-times"></i>
               <p>No bookings yet</p>
-              <span>Book your first ride to get started</span>
+              <span>Browse available routes to book your first ride</span>
             </div>
           </ng-template>
         </div>
       </section>
 
-      <!-- Map View -->
-      <section *ngIf="activeMenu === 1" class="map-section">
-        <h2>🗺️ Live Map</h2>
-        <div class="map-container">
-          <div class="map-placeholder">
-            <i class="fas fa-map-marked-alt"></i>
-            <h3>Interactive Map</h3>
-            <p>View nearby drivers and track your rides in real-time</p>
-            <button class="btn btn-primary">Enable Location</button>
-          </div>
-        </div>
-      </section>
-
-      <!-- Ride Status -->
-      <section *ngIf="activeMenu === 2" class="ride-status">
-        <h2>🚗 Current Ride Status</h2>
-        <div class="status-container" *ngIf="rideStatus.active; else noActiveRide">
-          <div class="status-card">
-            <div class="status-header">
-              <h3>Ride #{{ rideStatus.id }}</h3>
-              <span class="status-badge active">{{ rideStatus.status }}</span>
-            </div>
-            <div class="driver-info">
-              <img [src]="rideStatus.driverAvatar" alt="Driver">
-              <div>
-                <h4>{{ rideStatus.driverName }}</h4>
-                <span>⭐ {{ rideStatus.driverRating }}</span>
-                <span class="vehicle">{{ rideStatus.vehicle }}</span>
+      <!-- Available Routes -->
+      <section *ngIf="activeMenu === 1" class="routes-section">
+        <h2>🗺️ Available Routes</h2>
+        <div class="routes-grid" *ngIf="routes.length; else noRoutes">
+          <div class="route-card" *ngFor="let route of routes">
+            <div class="route-header">
+              <h3>{{ route.origin }} → {{ route.destination }}</h3>
+              <div class="route-price-badge">
+                <span class="price-label">Price</span>
+                <span class="route-price">{{ formatCurrency(route.price) }}</span>
               </div>
             </div>
-            <div class="route-info">
-              <div class="location">
+            <div class="route-details">
+              <div class="route-info">
                 <i class="fas fa-map-marker-alt pickup"></i>
-                <span>{{ rideStatus.from }}</span>
+                <span><strong>From:</strong> {{ route.origin }}</span>
               </div>
-              <div class="location">
+              <div class="route-info">
                 <i class="fas fa-map-marker-alt destination"></i>
-                <span>{{ rideStatus.to }}</span>
+                <span><strong>To:</strong> {{ route.destination }}</span>
+              </div>
+              <div class="route-info">
+                <i class="fas fa-clock"></i>
+                <span>Added: {{ formatDate(route.createdAt!) }}</span>
+              </div>
+              <div class="route-info">
+                <i class="fas fa-info-circle"></i>
+                <span>Route ID: #{{ route.id }}</span>
               </div>
             </div>
-            <div class="ride-actions">
-              <button class="btn btn-primary" (click)="contactDriver()">
-                <i class="fas fa-phone"></i> Contact Driver
+            <div class="route-actions">
+              <button class="btn btn-primary book-btn" (click)="bookRoute(route)">
+                <i class="fas fa-bookmark"></i> Book This Route
               </button>
-              <button class="btn btn-info" (click)="shareLocation()">
-                <i class="fas fa-share"></i> Share Location
-              </button>
+              <div class="route-summary">
+                <span class="fare-info">Fare: {{ formatCurrency(route.price) }}</span>
+              </div>
             </div>
           </div>
         </div>
-        <ng-template #noActiveRide>
-          <div class="no-active-ride">
-            <i class="fas fa-car"></i>
-            <p>No active ride at the moment</p>
-            <span>Book a new ride to get started</span>
+        <ng-template #noRoutes>
+          <div class="no-routes">
+            <i class="fas fa-route"></i>
+            <p>No routes available</p>
+            <span>Check back later for available routes</span>
           </div>
         </ng-template>
       </section>
 
+      <!-- My Bookings -->
+      <section *ngIf="activeMenu === 2" class="bookings-section">
+        <h2>🚗 My Bookings</h2>
+        <div class="routes-grid" *ngIf="bookings.length; else noBookings">
+          <div class="route-card booking-card-bluish" *ngFor="let booking of bookings">
+            <div class="route-header">
+              <h3>{{ booking.route.origin }} → {{ booking.route.destination }}</h3>
+              <div class="route-price-badge bluish-badge">
+                <span class="price-label">Fare</span>
+                <span class="route-price">{{ formatCurrency(booking.route.price) }}</span>
+              </div>
+            </div>
+            <div class="route-details">
+              <div class="route-info">
+                <i class="fas fa-map-marker-alt pickup"></i>
+                <span><strong>From:</strong> {{ booking.route.origin }}</span>
+              </div>
+              <div class="route-info">
+                <i class="fas fa-map-marker-alt destination"></i>
+                <span><strong>To:</strong> {{ booking.route.destination }}</span>
+              </div>
+              <div class="route-info">
+                <i class="fas fa-clock"></i>
+                <span>Booked: {{ formatDate(booking.createdAt!) }}</span>
+              </div>
+              <div class="route-info">
+                <i class="fas fa-info-circle"></i>
+                <span>Booking ID: #{{ booking.id }}</span>
+              </div>
+              <div class="route-info">
+                <i class="fas fa-info-circle"></i>
+                <span>Status: 
+                  <span [class]="getStatusClass(booking.status)">
+                    <span *ngIf="booking.status === 'PENDING'">PENDING</span>
+                    <span *ngIf="booking.status === 'ON_WAY'">ON WAY</span>
+                    <span *ngIf="booking.status === 'IN_PROGRESS'">IN PROGRESS</span>
+                    <span *ngIf="booking.status === 'COMPLETED'">COMPLETED</span>
+                    <span *ngIf="booking.status === 'PAID'">PAID</span>
+                    <span *ngIf="booking.status === 'DECLINED'">DECLINED</span>
+                  </span>
+                </span>
+              </div>
+            </div>
+            <div class="route-actions">
+              <button class="btn btn-bluish" (click)="makePayment(booking)" *ngIf="canMakePayment(booking)">
+                <i class="fas fa-credit-card"></i> Finalize Payment
+              </button>
+              <button class="btn btn-success" *ngIf="booking.status === 'PAID'" disabled>
+                <i class="fas fa-check"></i> ALREADY PAID
+              </button>
+              <button class="btn btn-info" *ngIf="booking.status !== 'PENDING' && booking.status !== 'PAID'">
+                <i class="fas fa-eye"></i> View Details
+              </button>
+            </div>
+          </div>
+        </div>
+        <ng-template #noBookings>
+          <div class="no-bookings">
+            <i class="fas fa-calendar-times"></i>
+            <p>No bookings found</p>
+            <span>Browse available routes to make your first booking</span>
+          </div>
+        </ng-template>
+      </section>
+
+      <!-- Payments -->
+      <section *ngIf="activeMenu === 3" class="payments-section">
+        <h2>💰 Payment History</h2>
+        <div class="payments-overview">
+          <div class="payment-stats">
+            <div class="stat">
+              <span class="label">Total Spent</span>
+              <span class="value">{{ formatCurrency(totalSpent) }}</span>
+            </div>
+            <div class="stat">
+              <span class="label">Total Payments</span>
+              <span class="value">{{ payments.length }}</span>
+            </div>
+          </div>
+          <div class="payments-list" *ngIf="payments.length; else noPayments">
+            <div class="payment-item" *ngFor="let payment of payments">
+              <div class="payment-status" [class]="getStatusClass(payment.status)">
+                {{ payment.status.toLowerCase() }}
+              </div>
+              <div class="payment-content">
+                <div class="payment-info">
+                  <h4>{{ payment.booking.route.origin }} → {{ payment.booking.route.destination }}</h4>
+                  <p class="payment-method">{{ payment.paymentMethod }}</p>
+                </div>
+                <div class="payment-details">
+                  <div class="amount">{{ formatCurrency(payment.amount) }}</div>
+                  <div class="date">{{ formatDate(payment.paidAt || payment.booking.createdAt!) }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <ng-template #noPayments>
+            <div class="no-payments">
+              <i class="fas fa-wallet"></i>
+              <p>No payments found</p>
+              <span>Make a booking to see your payment history</span>
+            </div>
+          </ng-template>
+        </div>
+      </section>
+
       <!-- Profile -->
-      <section *ngIf="activeMenu === 3" class="profile">
+      <section *ngIf="activeMenu === 4" class="profile">
         <h2>👤 Profile</h2>
         <div class="profile-card">
           <div class="profile-header">
@@ -219,57 +336,190 @@
           <div class="profile-details">
             <div class="detail">
               <span class="label">Member Since</span>
-              <span class="value">{{ user.memberSince }}</span>
+              <span class="value">2025</span>
             </div>
             <div class="detail">
               <span class="label">Total Rides</span>
-              <span class="value">{{ user.totalRides }}</span>
-            </div>
-            <div class="detail">
-              <span class="label">Rating</span>
-              <span class="value">⭐ {{ user.rating }}</span>
-            </div>
-            <div class="detail">
-              <span class="label">Reward Points</span>
-              <span class="value">{{ user.rewardPoints }}</span>
+              <span class="value">{{ totalRides }}</span>
             </div>
           </div>
-          <div class="profile-actions">
+          <!-- <div class="profile-actions">
             <button class="btn btn-primary">Edit Profile</button>
             <button class="btn btn-secondary">Change Password</button>
             <button class="btn btn-info">View History</button>
-          </div>
-        </div>
-      </section>
-
-      <!-- Payments -->
-      <section *ngIf="activeMenu === 4" class="payments">
-        <h2>💰 Payment History</h2>
-        <div class="payments-overview">
-          <div class="payment-stats">
-            <div class="stat">
-              <span class="label">This Month</span>
-              <span class="value">TZS  {{ monthlySpent }}</span>
-            </div>
-            <div class="stat">
-              <span class="label">Total Spent</span>
-              <span class="value">TZS  {{ user.totalSpent }}</span>
-            </div>
-          </div>
-          <div class="payments-list">
-            <div class="payment-card" *ngFor="let payment of payments">
-              <div class="payment-header">
-                <h4>{{ payment.date }}</h4>
-                <span class="payment-status" [class]="payment.status">{{ payment.status }}</span>
-              </div>
-              <div class="payment-details">
-                <span class="amount">{{ payment.amount }}</span>
-                <span class="description">{{ payment.description }}</span>
-              </div>
-            </div>
-          </div>
+          </div>-->
         </div>
       </section>
     </div>
   </main>
 </div>
+
+<!-- Booking Modal -->
+<div class="modal-overlay" *ngIf="showBookingModal" (click)="closeBookingModal()">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Book Route</h3>
+      <button class="close-btn" (click)="closeBookingModal()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="route-summary" *ngIf="bookingForm.route">
+        <div class="route-summary-header">
+          <h4>{{ bookingForm.route.origin }} → {{ bookingForm.route.destination }}</h4>
+          <div class="route-price-display">
+            <span class="price-label">Total Fare</span>
+            <span class="price-amount">{{ formatCurrency(bookingForm.route.price) }}</span>
+          </div>
+        </div>
+        <div class="route-details-summary">
+          <div class="detail-item">
+            <i class="fas fa-map-marker-alt pickup"></i>
+            <span><strong>From:</strong> {{ bookingForm.route.origin }}</span>
+          </div>
+          <div class="detail-item">
+            <i class="fas fa-map-marker-alt destination"></i>
+            <span><strong>To:</strong> {{ bookingForm.route.destination }}</span>
+          </div>
+          <div class="detail-item">
+            <i class="fas fa-info-circle"></i>
+            <span><strong>Route ID:</strong> #{{ bookingForm.route.id }}</span>
+          </div>
+        </div>
+      </div>
+      <form *ngIf="bookingForm.route" (ngSubmit)="confirmBooking()">
+        <div class="form-group">
+          <label for="scheduledTime">Scheduled Time *</label>
+          <input 
+            type="datetime-local" 
+            id="scheduledTime" 
+            [(ngModel)]="bookingForm.scheduledTime" 
+            name="scheduledTime"
+            required
+            class="form-control"
+          >
+        </div>
+        <div class="form-group">
+          <label>Pickup Location</label>
+          <div class="readonly-field">{{ bookingForm.route?.origin }}</div>
+        </div>
+        <div class="form-group">
+          <label>Dropoff Location</label>
+          <div class="readonly-field">{{ bookingForm.route?.destination }}</div>
+        </div>
+        <div class="booking-summary">
+          <div class="summary-item">
+            <span>Route Fare:</span>
+            <span>{{ formatCurrency(bookingForm.route?.price || 0) }}</span>
+          </div>
+          <div class="summary-item total">
+            <span>Total Amount:</span>
+            <span>{{ formatCurrency(bookingForm.route?.price || 0) }}</span>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" (click)="closeBookingModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary" [disabled]="!bookingForm.route || !bookingForm.scheduledTime">Confirm Booking</button>
+        </div>
+      </form>
+      <div *ngIf="!bookingForm.route" class="loading-message">
+        <p>Loading route information...</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Payment Modal -->
+<div class="modal-overlay" *ngIf="showPaymentModal" (click)="closePaymentModal()">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Make Payment</h3>
+      <button class="close-btn" (click)="closePaymentModal()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="payment-summary" *ngIf="selectedBooking">
+        <div class="route-summary-header">
+          <h4>{{ selectedBooking.route.origin }} → {{ selectedBooking.route.destination }}</h4>
+          <div class="route-price-display">
+            <span class="price-label">Amount Due</span>
+            <span class="price-amount">{{ formatCurrency(paymentForm.amount) }}</span>
+          </div>
+        </div>
+        <div class="route-details-summary">
+          <div class="detail-item">
+            <i class="fas fa-calendar"></i>
+            <span><strong>Booking Date:</strong> {{ formatDate(selectedBooking.createdAt!) }}</span>
+          </div>
+          <div class="detail-item">
+            <i class="fas fa-info-circle"></i>
+            <span><strong>Booking ID:</strong> #{{ selectedBooking.id }}</span>
+          </div>
+          <div class="detail-item">
+            <i class="fas fa-map-marker-alt destination"></i>
+            <span><strong>Destination:</strong> {{ selectedBooking.route.destination }}</span>
+          </div>
+        </div>
+      </div>
+      <form (ngSubmit)="confirmPayment()" *ngIf="selectedBooking">
+        <div class="form-group">
+          <label>Payment Method *</label>
+          <div class="payment-methods">
+            <div 
+              class="payment-method-option" 
+              *ngFor="let method of paymentMethods"
+              [class.selected]="paymentForm.paymentMethod === method.id"
+              (click)="paymentForm.paymentMethod = method.id"
+            >
+              <i [class]="method.icon"></i>
+              <span>{{ method.name }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Payment Summary</label>
+          <div class="payment-summary-details">
+            <div class="summary-item">
+              <span>Route Fare:</span>
+              <span>{{ formatCurrency(paymentForm.amount) }}</span>
+            </div>
+            <div class="summary-item">
+              <span>Service Fee:</span>
+              <span>TZS 0</span>
+            </div>
+            <div class="summary-item total">
+              <span>Total Amount:</span>
+              <span>{{ formatCurrency(paymentForm.amount) }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" (click)="closePaymentModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary" [disabled]="!selectedBooking || !selectedBooking.id">
+            Pay {{ formatCurrency(paymentForm.amount) }}
+          </button>
+        </div>
+      </form>
+      <div *ngIf="!selectedBooking" class="loading-message">
+        <p>Loading payment information...</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.accepted-badge {
+  background: #00e676;
+  color: #fff;
+  border-radius: 8px;
+  padding: 2px 10px;
+  font-size: 0.85em;
+  margin-left: 10px;
+  font-weight: 600;
+}
+.driver-info {
+  color: #007bff;
+  font-weight: 600;
+}
+</style>

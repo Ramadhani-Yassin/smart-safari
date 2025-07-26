@@ -89,9 +89,17 @@ public class PaymentService {
                 .booking(booking.get())
                 .amount(booking.get().getRoute().getPrice())
                 .paymentMethod(paymentMethod)
-                .status(Payment.Status.PENDING)
+                .status(Payment.Status.PAID) // Set to PAID immediately
+                .paidAt(LocalDateTime.now())
                 .build();
 
-        return paymentRepository.save(payment);
+        Payment savedPayment = paymentRepository.save(payment);
+        
+        // Update the booking status to PAID
+        Booking bookingToUpdate = booking.get();
+        bookingToUpdate.setStatus(Booking.Status.PAID);
+        bookingRepository.save(bookingToUpdate);
+        
+        return savedPayment;
     }
 } 

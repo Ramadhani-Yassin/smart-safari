@@ -1,10 +1,12 @@
 /home/ramah/Documents/smart_safari/backEnd/src/main/java/com/smart/safais/SafaisApplication.java
+/home/ramah/Documents/smart_safari/backEnd/src/main/java/com/smart/safais/config/CorsConfig.java
 /home/ramah/Documents/smart_safari/backEnd/src/main/java/com/smart/safais/controller/BookingController.java
 /home/ramah/Documents/smart_safari/backEnd/src/main/java/com/smart/safais/controller/PaymentController.java
 /home/ramah/Documents/smart_safari/backEnd/src/main/java/com/smart/safais/controller/RouteController.java
 /home/ramah/Documents/smart_safari/backEnd/src/main/java/com/smart/safais/controller/TripController.java
 /home/ramah/Documents/smart_safari/backEnd/src/main/java/com/smart/safais/controller/UserController.java
 /home/ramah/Documents/smart_safari/backEnd/src/main/java/com/smart/safais/dto/ApiResponse.java
+/home/ramah/Documents/smart_safari/backEnd/src/main/java/com/smart/safais/dto/BookingRequestDto.java
 /home/ramah/Documents/smart_safari/backEnd/src/main/java/com/smart/safais/dto/UserLoginDto.java
 /home/ramah/Documents/smart_safari/backEnd/src/main/java/com/smart/safais/dto/UserRegistrationDto.java
 /home/ramah/Documents/smart_safari/backEnd/src/main/java/com/smart/safais/model/Booking.java

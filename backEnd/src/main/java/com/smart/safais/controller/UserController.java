@@ -9,9 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/users")
-@CrossOrigin(origins = "*") // Allow all origins for development
+@CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
 public class UserController {
     
     @Autowired
@@ -60,6 +62,44 @@ public class UserController {
                     .orElse(ResponseEntity.notFound().build());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(ApiResponse.error("Error retrieving user"));
+        }
+    }
+    
+    /**
+     * Get count of customers
+     * @return API response with customer count
+     */
+    @GetMapping("/count/customers")
+    public ResponseEntity<ApiResponse<Long>> getCustomerCount() {
+        try {
+            long count = userService.getCustomerCount();
+            return ResponseEntity.ok(ApiResponse.success("Customer count retrieved successfully", count));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(ApiResponse.error("Error retrieving customer count"));
+        }
+    }
+    
+    /**
+     * Get count of drivers
+     * @return API response with driver count
+     */
+    @GetMapping("/count/drivers")
+    public ResponseEntity<ApiResponse<Long>> getDriverCount() {
+        try {
+            long count = userService.getDriverCount();
+            return ResponseEntity.ok(ApiResponse.success("Driver count retrieved successfully", count));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(ApiResponse.error("Error retrieving driver count"));
+        }
+    }
+
+    @GetMapping("/role/{role}")
+    public ResponseEntity<ApiResponse<List<User>>> getUsersByRole(@PathVariable String role) {
+        try {
+            List<User> users = userService.getUsersByRole(role);
+            return ResponseEntity.ok(new ApiResponse<>(true, "Users retrieved successfully", users));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Error retrieving users: " + e.getMessage(), null));
         }
     }
     
