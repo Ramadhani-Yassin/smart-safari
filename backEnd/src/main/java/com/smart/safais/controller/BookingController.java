@@ -49,9 +49,24 @@ public class BookingController {
     @PostMapping(consumes = "application/json", produces = "application/json")
     public ResponseEntity<ApiResponse<Booking>> createBooking(@RequestBody BookingRequestDto bookingRequest) {
         try {
+            System.out.println("🔍 Creating booking with data: " + bookingRequest);
+            System.out.println("📅 Customer ID: " + bookingRequest.getCustomerId());
+            System.out.println("🛣️ Route ID: " + bookingRequest.getRouteId());
+            System.out.println("⏰ Scheduled Time: " + bookingRequest.getScheduledTime());
+            System.out.println("⏰ Scheduled Time type: " + (bookingRequest.getScheduledTime() != null ? bookingRequest.getScheduledTime().getClass().getName() : "null"));
+            
+            // Additional validation
+            if (!bookingRequest.isValid()) {
+                System.err.println("❌ Invalid booking request: " + bookingRequest);
+                return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Invalid booking request - all fields are required", null));
+            }
+            
             Booking createdBooking = bookingService.createBookingFromDto(bookingRequest);
+            System.out.println("✅ Booking created successfully with ID: " + createdBooking.getId());
             return ResponseEntity.ok(new ApiResponse<>(true, "Booking created successfully", createdBooking));
         } catch (Exception e) {
+            System.err.println("❌ Error creating booking: " + e.getMessage());
+            e.printStackTrace();
             return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Error creating booking: " + e.getMessage(), null));
         }
     }
@@ -81,6 +96,32 @@ public class BookingController {
         return ResponseEntity.ok(new ApiResponse<>(true, "Booking controller is working", "OK"));
     }
 
+    @GetMapping("/health")
+    public ResponseEntity<ApiResponse<String>> healthCheck() {
+        try {
+            System.out.println("🏥 Health check requested");
+            return ResponseEntity.ok(new ApiResponse<>(true, "Booking service is healthy", "OK"));
+        } catch (Exception e) {
+            System.err.println("❌ Health check failed: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse<>(false, "Health check failed: " + e.getMessage(), null));
+        }
+    }
+
+    @GetMapping("/test/time")
+    public ResponseEntity<ApiResponse<String>> testTime() {
+        try {
+            String currentTime = LocalDateTime.now().toString();
+            System.out.println("🕐 Current time: " + currentTime);
+            return ResponseEntity.ok(new ApiResponse<>(true, "Current time", currentTime));
+        } catch (Exception e) {
+            System.err.println("❌ Error getting time: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse<>(false, "Error: " + e.getMessage(), null));
+        }
+    }
+
     @PostMapping("/test/create-pending")
     public ResponseEntity<ApiResponse<Booking>> createTestPendingBooking() {
         try {
@@ -97,6 +138,41 @@ public class BookingController {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse<>(false, "Error creating test booking: " + e.getMessage(), null));
+        }
+    }
+
+    @PostMapping("/test/echo")
+    public ResponseEntity<ApiResponse<String>> echoBookingRequest(@RequestBody String rawRequest) {
+        try {
+            System.out.println("🔍 Raw request received: " + rawRequest);
+            return ResponseEntity.ok(new ApiResponse<>(true, "Request received", rawRequest));
+        } catch (Exception e) {
+            System.err.println("❌ Error in echo: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Error: " + e.getMessage(), null));
+        }
+    }
+
+    @PostMapping("/test/booking-dto")
+    public ResponseEntity<ApiResponse<String>> testBookingDto(@RequestBody BookingRequestDto bookingRequest) {
+        try {
+            System.out.println("🔍 Testing BookingRequestDto parsing...");
+            System.out.println("📋 Raw DTO: " + bookingRequest);
+            System.out.println("📅 Customer ID: " + bookingRequest.getCustomerId());
+            System.out.println("🛣️ Route ID: " + bookingRequest.getRouteId());
+            System.out.println("⏰ Scheduled Time: " + bookingRequest.getScheduledTime());
+            System.out.println("✅ Is Valid: " + bookingRequest.isValid());
+            
+            String result = "DTO parsed successfully. CustomerId: " + bookingRequest.getCustomerId() + 
+                          ", RouteId: " + bookingRequest.getRouteId() + 
+                          ", ScheduledTime: " + bookingRequest.getScheduledTime() + 
+                          ", Valid: " + bookingRequest.isValid();
+            
+            return ResponseEntity.ok(new ApiResponse<>(true, "DTO test successful", result));
+        } catch (Exception e) {
+            System.err.println("❌ Error parsing DTO: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Error parsing DTO: " + e.getMessage(), null));
         }
     }
 

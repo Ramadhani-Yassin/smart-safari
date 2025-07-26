@@ -53,26 +53,58 @@ public class BookingService {
     }
 
     public Booking createBookingFromDto(BookingRequestDto bookingRequest) {
-        // Validate that customer exists and is a customer role
-        Optional<User> customer = userRepository.findById(bookingRequest.getCustomerId());
-        if (customer.isEmpty() || !"USER".equals(customer.get().getRole())) {
-            throw new RuntimeException("Invalid customer or customer role");
+        try {
+            System.out.println("🔍 Validating booking request...");
+            System.out.println("📋 Request data: " + bookingRequest);
+            System.out.println("📅 Scheduled time type: " + (bookingRequest.getScheduledTime() != null ? bookingRequest.getScheduledTime().getClass().getName() : "null"));
+            System.out.println("📅 Scheduled time value: " + bookingRequest.getScheduledTime());
+            
+            // Validate the entire request
+            if (!bookingRequest.isValid()) {
+                System.err.println("❌ Invalid booking request: " + bookingRequest);
+                throw new RuntimeException("Invalid booking request - all fields are required");
+            }
+            
+            // Validate that customer exists and is a customer role
+            Optional<User> customer = userRepository.findById(bookingRequest.getCustomerId());
+            if (customer.isEmpty()) {
+                System.err.println("❌ Customer not found with ID: " + bookingRequest.getCustomerId());
+                throw new RuntimeException("Customer not found with ID: " + bookingRequest.getCustomerId());
+            }
+            if (!"USER".equals(customer.get().getRole())) {
+                System.err.println("❌ User with ID " + bookingRequest.getCustomerId() + " is not a customer (role: " + customer.get().getRole() + ")");
+                throw new RuntimeException("User is not a customer (role: " + customer.get().getRole() + ")");
+            }
+            System.out.println("✅ Customer validated: " + customer.get().getName());
+
+            // Validate that route exists
+            Optional<Route> route = routeRepository.findById(bookingRequest.getRouteId());
+            if (route.isEmpty()) {
+                System.err.println("❌ Route not found with ID: " + bookingRequest.getRouteId());
+                throw new RuntimeException("Route not found with ID: " + bookingRequest.getRouteId());
+            }
+            System.out.println("✅ Route validated: " + route.get().getOrigin() + " → " + route.get().getDestination());
+
+            System.out.println("🔨 Building booking object...");
+            System.out.println("📅 Scheduled time from request: " + bookingRequest.getScheduledTime());
+            
+            Booking booking = Booking.builder()
+                    .customer(customer.get())
+                    .route(route.get())
+                    .scheduledTime(bookingRequest.getScheduledTime())
+                    .status(Booking.Status.PENDING)
+                    .build();
+
+            System.out.println("💾 Saving booking to database...");
+            Booking savedBooking = bookingRepository.save(booking);
+            System.out.println("✅ Booking saved successfully with ID: " + savedBooking.getId());
+            
+            return savedBooking;
+        } catch (Exception e) {
+            System.err.println("❌ Error in createBookingFromDto: " + e.getMessage());
+            e.printStackTrace();
+            throw e;
         }
-
-        // Validate that route exists
-        Optional<Route> route = routeRepository.findById(bookingRequest.getRouteId());
-        if (route.isEmpty()) {
-            throw new RuntimeException("Route not found");
-        }
-
-        Booking booking = Booking.builder()
-                .customer(customer.get())
-                .route(route.get())
-                .scheduledTime(bookingRequest.getScheduledTime())
-                .status(Booking.Status.PENDING)
-                .build();
-
-        return bookingRepository.save(booking);
     }
 
     public Booking updateBookingStatus(Long id, Booking.Status status) {

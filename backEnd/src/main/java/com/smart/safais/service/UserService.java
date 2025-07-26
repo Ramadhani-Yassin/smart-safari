@@ -99,4 +99,16 @@ public class UserService {
     public List<User> getUsersByRole(String role) {
         return userRepository.findByRole(role);
     }
+
+    /**
+     * Delete user by ID
+     * @param id the user ID to delete
+     * @throws RuntimeException if user not found
+     */
+    public void deleteUser(Long id) {
+        if (!userRepository.existsById(id)) {
+            throw new RuntimeException("User not found with id: " + id);
+        }
+        userRepository.deleteById(id);
+    }
 } 

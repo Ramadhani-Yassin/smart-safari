@@ -54,4 +54,12 @@ export class BookingService {
   deleteBooking(id: number): Observable<BookingResponse> {
     return this.http.delete<BookingResponse>(`${this.apiUrl}/${id}`);
   }
+
+  testBookingDto(booking: any): Observable<BookingResponse> {
+    return this.http.post<BookingResponse>(`${this.apiUrl}/test/booking-dto`, booking);
+  }
+
+  healthCheck(): Observable<BookingResponse> {
+    return this.http.get<BookingResponse>(`${this.apiUrl}/health`);
+  }
 } 

@@ -24,6 +24,9 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     // Find bookings by driver ID
     List<Booking> findByDriverId(Long driverId);
     
+    // Find bookings by route ID
+    List<Booking> findByRouteId(Long routeId);
+    
     // Find pending bookings (no driver assigned)
     @Query("SELECT b FROM Booking b WHERE b.status = 'PENDING' AND b.driver IS NULL")
     List<Booking> findPendingBookingsWithoutDriver();

@@ -1,7 +1,9 @@
 package com.smart.safais.service;
 
 import com.smart.safais.model.Route;
+import com.smart.safais.model.Booking;
 import com.smart.safais.repository.RouteRepository;
+import com.smart.safais.repository.BookingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +15,9 @@ public class RouteService {
 
     @Autowired
     private RouteRepository routeRepository;
+    
+    @Autowired
+    private BookingRepository bookingRepository;
 
     public List<Route> getAllRoutes() {
         return routeRepository.findAll();
@@ -39,6 +44,19 @@ public class RouteService {
     }
 
     public void deleteRoute(Long id) {
+        // Check if route exists
+        Optional<Route> routeOptional = routeRepository.findById(id);
+        if (routeOptional.isEmpty()) {
+            throw new RuntimeException("Route not found with id: " + id);
+        }
+        
+        // Check if there are any bookings using this route
+        List<Booking> bookingsWithRoute = bookingRepository.findByRouteId(id);
+        if (!bookingsWithRoute.isEmpty()) {
+            throw new RuntimeException("Route is in progress and cannot be deleted. There are " + bookingsWithRoute.size() + " active booking(s) using this route.");
+        }
+        
+        // If no bookings exist, safe to delete
         routeRepository.deleteById(id);
     }
 

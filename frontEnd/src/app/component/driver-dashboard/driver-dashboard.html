@@ -49,6 +49,11 @@
         <p class="breadcrumb">{{ getCurrentPageDescription() }}</p>
       </div>
       <div class="header-right">
+        <div class="quick-actions">
+          <button class="btn btn-secondary" (click)="refreshAllData()" title="Refresh Data">
+            <i class="fas fa-sync-alt"></i>
+          </button>
+        </div>
         <div class="status-toggle">
           <label class="switch">
             <input type="checkbox" [(ngModel)]="driver.isOnline" (change)="toggleStatus()">
@@ -73,8 +78,8 @@
               <i class="fas fa-route"></i>
             </div>
             <div class="stat-info">
-              <h3>{{ driver.totalTrips }}</h3>
-              <p>Total Trips</p>
+              <h3>{{ completedRidesCount }}</h3>
+              <p>Completed Rides</p>
             </div>
           </div>
           <div class="stat-card">
@@ -82,8 +87,8 @@
               <i class="fas fa-car"></i>
             </div>
             <div class="stat-info">
-              <h3>{{ totalRides }}</h3>
-              <p>Active Rides</p>
+              <h3>{{ pendingRidesCount }}</h3>
+              <p>Pending Rides</p>
             </div>
           </div>
           <div class="stat-card">
@@ -92,16 +97,7 @@
             </div>
             <div class="stat-info">
               <h3>{{ formatCurrency(totalEarnings) }}</h3>
-              <p>Total Earnings</p>
-            </div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-icon">
-              <i class="fas fa-star"></i>
-            </div>
-            <div class="stat-info">
-              <h3>{{ driver.rating }}</h3>
-              <p>Rating</p>
+              <p>Total Earnings (PAID)</p>
             </div>
           </div>
         </div>
@@ -282,6 +278,9 @@
               <button class="btn btn-success" (click)="completeRide(ride.id!)" *ngIf="ride.status === 'IN_PROGRESS'">
                 <i class="fas fa-check"></i> Complete Ride
               </button>
+              <button class="btn btn-warning" (click)="markRideAsPaid(ride.id!)" *ngIf="ride.status === 'COMPLETED'">
+                <i class="fas fa-money-bill-wave"></i> Confirm Payment
+              </button>
               <button class="btn btn-info" (click)="contactPassenger(ride.id!)">
                 <i class="fas fa-phone"></i> Contact
               </button>
@@ -323,12 +322,12 @@
               <span class="value">{{ formatCurrency(monthlyEarnings) }}</span>
             </div>
             <div class="stat">
-              <span class="label">Completed Rides</span>
+              <span class="label">Completed Rides (PAID)</span>
               <span class="value">{{ completedRidesCount }}</span>
             </div>
             <div class="stat">
               <span class="label">Total Trips</span>
-              <span class="value">{{ driver.totalTrips }}</span>
+              <span class="value">{{ totalRides }}</span>
             </div>
           </div>
         </div>
@@ -358,12 +357,8 @@
               <span class="value">{{ driver.licensePlate }}</span>
             </div>
             <div class="detail">
-              <span class="label">Rating</span>
-              <span class="value">⭐ {{ driver.rating }}</span>
-            </div>
-            <div class="detail">
               <span class="label">Total Trips</span>
-              <span class="value">{{ driver.totalTrips }}</span>
+              <span class="value">{{ totalRides }}</span>
             </div>
             <div class="detail">
               <span class="label">Status</span>

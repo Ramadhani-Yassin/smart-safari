@@ -6,6 +6,7 @@ import com.smart.safais.dto.UserRegistrationDto;
 import com.smart.safais.model.User;
 import com.smart.safais.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -110,5 +111,39 @@ public class UserController {
     @GetMapping("/health")
     public ResponseEntity<ApiResponse<String>> healthCheck() {
         return ResponseEntity.ok(ApiResponse.success("User service is running"));
+    }
+
+    @PostMapping("/test/create-customer")
+    public ResponseEntity<ApiResponse<User>> createTestCustomer() {
+        try {
+            UserRegistrationDto testCustomer = new UserRegistrationDto();
+            testCustomer.setName("Test Customer");
+            testCustomer.setEmail("customer@test.com");
+            testCustomer.setPassword("password123");
+            testCustomer.setRole("USER");
+            
+            User user = userService.registerUser(testCustomer);
+            return ResponseEntity.ok(new ApiResponse<>(true, "Test customer created successfully", user));
+        } catch (Exception e) {
+            System.err.println("❌ Error creating test customer: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse<>(false, "Error creating test customer: " + e.getMessage(), null));
+        }
+    }
+
+    /**
+     * Delete user by ID
+     * @param id the user ID to delete
+     * @return API response indicating success or failure
+     */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse<String>> deleteUser(@PathVariable Long id) {
+        try {
+            userService.deleteUser(id);
+            return ResponseEntity.ok(ApiResponse.success("User deleted successfully", "User with id " + id + " has been deleted"));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(ApiResponse.error("Error deleting user: " + e.getMessage()));
+        }
     }
 } 

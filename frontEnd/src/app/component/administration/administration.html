@@ -1,38 +1,71 @@
 <div class="dashboard">
     <!-- Sidebar -->
-    <nav class="sidebar">
-        <div class="logo">
-            <i class="fas fa-car"></i>
-            <span>Smart Safari</span>
+    <aside class="sidebar" [class.collapsed]="sidebarCollapsed">
+        <div class="sidebar-brand">
+            <div class="logo">
+                <i class="fas fa-car"></i>
+                <h2 *ngIf="!sidebarCollapsed">Smart Safari</h2>
+            </div>
+            <button class="collapse-btn" (click)="toggleSidebar()">
+                <i class="fas" [ngClass]="sidebarCollapsed ? 'fa-chevron-right' : 'fa-chevron-left'"></i>
+            </button>
         </div>
-        <ul class="menu">
-            <li [class.active]="activeMenu === 0" (click)="setActiveMenu(0)"><a><i class="fas fa-home"></i> Dashboard</a></li>
-            <li [class.active]="activeMenu === 1" (click)="setActiveMenu(1)"><a><i class="fas fa-users"></i> Customers</a></li>
-            <li [class.active]="activeMenu === 2" (click)="setActiveMenu(2)"><a><i class="fas fa-car-side"></i> Drivers</a></li>
-            <li [class.active]="activeMenu === 3" (click)="setActiveMenu(3)"><a><i class="fas fa-route"></i> Routes</a></li>
-            <li [class.active]="activeMenu === 4" (click)="setActiveMenu(4)"><a><i class="fas fa-money-bill-wave"></i> Payments</a></li>
-            <li [class.active]="activeMenu === 5" (click)="setActiveMenu(5)"><a><i class="fas fa-chart-line"></i> Statistics</a></li>
-            <li [class.active]="activeMenu === 6" (click)="setActiveMenu(6)"><a><i class="fas fa-cog"></i> Settings</a></li>
-        </ul>
-        <div class="logout">
-            <a (click)="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        
+        <nav class="sidebar-nav">
+            <a [class.active]="activeMenu === 0" (click)="setActiveMenu(0)" class="nav-item">
+                <i class="fas fa-home"></i>
+                <span *ngIf="!sidebarCollapsed">Dashboard</span>
+            </a>
+            <a [class.active]="activeMenu === 1" (click)="setActiveMenu(1)" class="nav-item">
+                <i class="fas fa-users"></i>
+                <span *ngIf="!sidebarCollapsed">Customers</span>
+            </a>
+            <a [class.active]="activeMenu === 2" (click)="setActiveMenu(2)" class="nav-item">
+                <i class="fas fa-car-side"></i>
+                <span *ngIf="!sidebarCollapsed">Drivers</span>
+            </a>
+            <a [class.active]="activeMenu === 3" (click)="setActiveMenu(3)" class="nav-item">
+                <i class="fas fa-route"></i>
+                <span *ngIf="!sidebarCollapsed">Routes</span>
+            </a>
+            <a [class.active]="activeMenu === 4" (click)="setActiveMenu(4)" class="nav-item">
+                <i class="fas fa-money-bill-wave"></i>
+                <span *ngIf="!sidebarCollapsed">Payments</span>
+            </a>
+            <a [class.active]="activeMenu === 5" (click)="setActiveMenu(5)" class="nav-item">
+                <i class="fas fa-chart-line"></i>
+                <span *ngIf="!sidebarCollapsed">Statistics</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <button class="logout-btn" (click)="logout()">
+                <i class="fas fa-sign-out-alt"></i>
+                <span *ngIf="!sidebarCollapsed">Logout</span>
+            </button>
         </div>
-    </nav>
+    </aside>
 
     <!-- Main Content -->
-    <div class="main-content">
-        <!-- Top Navigation -->
-        <div class="top-nav">
-            <div class="search">
-                <input type="text" placeholder="Search...">
-                <button><i class="fas fa-search"></i></button>
+    <main class="main-content" [class.sidebar-collapsed]="sidebarCollapsed">
+        <!-- Header -->
+        <header class="main-header">
+            <div class="header-left">
+                <h1>Administration Dashboard</h1>
+                <p class="breadcrumb">Manage your Smart Safari system</p>
             </div>
-            <div class="user-info">
-                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiM2QzVDN0YiLz4KPHN2ZyB4PSIxMCIgeT0iMTAiIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIj4KPHBhdGggZD0iTTEyIDEyQzE0LjIwOTEgMTIgMTYgMTAuMjA5MSAxNiA4QzE2IDUuNzkwODYgMTQuMjA5MSA0IDEyIDRDOS43OTA4NiA0IDggNS43OTA4NiA4IDhDOCAxMC4yMDkxIDkuNzkwODYgMTIgMTJaIiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBkPSJNMTIgMTRDNy41ODE3MiAxNCA0IDE3LjU4MTcgNCAyMkgyMEMyMCAxNy41ODE3IDE2LjQxODMgMTQgMTIgMTRaIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4KPC9zdmc+" alt="User">
-                <span>Admin</span>
-                <i class="fas fa-chevron-down"></i>
+            <div class="header-right">
+                <div class="search">
+                    <input type="text" placeholder="Search...">
+                    <button><i class="fas fa-search"></i></button>
+                </div>
+                <div class="user-info">
+                    <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiM2QzVDN0YiLz4KPHN2ZyB4PSIxMCIgeT0iMTAiIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIj4KPHBhdGggZD0iTTEyIDEyQzE0LjIwOTEgMTIgMTYgMTAuMjA5MSAxNiA4QzE2IDUuNzkwODYgMTQuMjA5MSA0IDEyIDRDOS43OTA4NiA0IDggNS43OTA4NiA4IDhDOCAxMC4yMDkxIDkuNzkwODYgMTIgMTJaIiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBkPSJNMTIgMTRDNy41ODE3MiAxNCA0IDE3LjU4MTcgNCAyMkgyMEMyMCAxNy41ODE3IDE2LjQxODMgMTQgMTIgMTRaIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4KPC9zdmc+" alt="User">
+                    <span>Admin</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
             </div>
-        </div>
+        </header>
 
         <!-- Dashboard Content -->
         <div class="content">
@@ -58,15 +91,6 @@
                             <div class="card-info">
                                 <h3>Drivers</h3>
                                 <p>{{ driverCount }}</p>
-                            </div>
-                        </div>
-                        <div class="card">
-                            <div class="card-icon bg-orange">
-                                <i class="fas fa-map-marked-alt"></i>
-                            </div>
-                            <div class="card-info">
-                                <h3>Today's Trips</h3>
-                                <p>{{ todayTrips }}</p>
                             </div>
                         </div>
                         <div class="card">
@@ -272,7 +296,7 @@
                     </div>
                 </div>
 
-                <!-- Settings -->
+                <!-- Settings 
                 <div *ngSwitchCase="6">
                     <h2>Settings</h2>
                     <div class="card">
@@ -284,10 +308,15 @@
                         </ul>
                     </div>
                 </div>
+                -->
+
             </ng-container>
         </div>
-    </div>
+    </main>
 </div>
+
+<!-- Notification Modal -->
+<app-modal></app-modal>
 
 <!-- Add Route Modal -->
 <div class="modal-overlay" *ngIf="showAddRouteModal" (click)="closeAddRouteModal()">
@@ -394,22 +423,3 @@
     </div>
 </div>
 
-<!-- Delete User Modal -->
-<div class="modal-overlay" *ngIf="showDeleteUserModal" (click)="closeDeleteUserModal()">
-    <div class="modal" (click)="$event.stopPropagation()">
-        <div class="modal-header">
-            <h3>Confirm Delete</h3>
-            <button class="close-btn" (click)="closeDeleteUserModal()">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-        <div class="modal-body">
-            <p>Are you sure you want to delete <strong>{{ userToDelete?.name }}</strong>?</p>
-            <p>This action cannot be undone.</p>
-            <div class="modal-actions">
-                <button type="button" class="btn btn-secondary" (click)="closeDeleteUserModal()">Cancel</button>
-                <button type="button" class="btn btn-danger" (click)="confirmDeleteUser()">Delete User</button>
-            </div>
-        </div>
-    </div>
-</div>

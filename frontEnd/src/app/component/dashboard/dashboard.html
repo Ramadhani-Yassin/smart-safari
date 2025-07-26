@@ -48,6 +48,9 @@
       </div>
       <div class="header-right">
         <div class="quick-actions">
+          <button class="btn btn-secondary" (click)="refreshDashboardData()" title="Refresh Data">
+            <i class="fas fa-sync-alt"></i>
+          </button>
           <button class="btn btn-primary" (click)="setActiveMenu(1)">
             <i class="fas fa-route"></i> Browse Routes
           </button>
@@ -102,6 +105,20 @@
               <i class="fas fa-car"></i>
             </div>
           </div>
+          
+          <!-- Test Customer Creation Card (only show if user is not a customer) -->
+          <div class="quick-action-card test-customer-card" *ngIf="user.role !== 'USER'">
+            <div class="action-content">
+              <h3>⚠️ Testing Notice</h3>
+              <p>You are logged in as a <strong>{{ user.role }}</strong>. Only customers (USER role) can create bookings.</p>
+              <button class="btn btn-warning action-btn" (click)="createTestCustomer()">
+                <i class="fas fa-info-circle"></i> Get Help
+              </button>
+            </div>
+            <div class="action-icon">
+              <i class="fas fa-exclamation-triangle"></i>
+            </div>
+          </div>
         </div>
 
         <div class="recent-bookings">
@@ -144,8 +161,14 @@
                 <button class="btn btn-primary" (click)="makePayment(booking)" *ngIf="canMakePayment(booking)">
                   <i class="fas fa-credit-card"></i> Make Payment
                 </button>
-                <button class="btn btn-success" *ngIf="booking.status === 'PAID'" disabled>
-                  <i class="fas fa-check"></i> ALREADY PAID
+                <button class="btn btn-success paid-btn" *ngIf="booking.status === 'PAID'" disabled>
+                  <i class="fas fa-check"></i> PAID
+                </button>
+                <button class="btn btn-info" *ngIf="booking.status === 'ON_WAY'">
+                  <i class="fas fa-car"></i> Driver En Route
+                </button>
+                <button class="btn btn-warning" *ngIf="booking.status === 'IN_PROGRESS'">
+                  <i class="fas fa-route"></i> In Progress
                 </button>
                 <button class="btn btn-success" *ngIf="booking.status === 'COMPLETED'">
                   <i class="fas fa-star"></i> Rate Ride

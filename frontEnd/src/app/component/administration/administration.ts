@@ -11,11 +11,12 @@ import { Route } from '../../model/Route';
 import { User } from '../../model/User';
 import { Booking } from '../../model/Booking';
 import { Payment } from '../../model/Payment';
+import { ModalComponent } from '../../components/modal/modal.component';
 
 @Component({
   selector: 'app-administration',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ModalComponent],
   templateUrl: './administration.html',
   styleUrls: ['./administration.css']
 })
@@ -49,11 +50,13 @@ export class Administration implements OnInit {
   editRouteData: Route = { id: 0, origin: '', destination: '', price: 0 };
   
   // User management
-  showDeleteUserModal = false;
   userToDelete: User | null = null;
   
   // Loading states
   isLoading = false;
+  
+  // Sidebar collapse
+  sidebarCollapsed = false;
 
   constructor(
     private router: Router, 
@@ -253,22 +256,30 @@ export class Administration implements OnInit {
   }
 
   deleteRoute(routeId: number) {
-    this.modalService.showWarning('Confirm Delete', 'Are you sure you want to delete this route?');
-    
-    this.routeService.deleteRoute(routeId).subscribe({
-      next: (response) => {
-        if (response.success) {
-          this.modalService.showSuccess('Success', 'Route deleted successfully');
-          this.loadRoutes();
-        } else {
-          this.modalService.showError('Error', response.message);
+    // Show confirmation dialog first
+    if (confirm('Are you sure you want to delete this route? This action cannot be undone.')) {
+      this.routeService.deleteRoute(routeId).subscribe({
+        next: (response) => {
+          if (response.success) {
+            this.modalService.showSuccess('Success', 'Route deleted successfully');
+            this.loadRoutes();
+          } else {
+            this.modalService.showError('Cannot Delete Route', response.message || 'Failed to delete route');
+          }
+        },
+        error: (error) => {
+          console.error('Error deleting route:', error);
+          // Extract the error message from the backend response
+          let errorMessage = 'Failed to delete route. Please try again.';
+          if (error.error && error.error.message) {
+            errorMessage = error.error.message;
+          } else if (error.message) {
+            errorMessage = error.message;
+          }
+          this.modalService.showError('Cannot Delete Route', errorMessage);
         }
-      },
-      error: (error) => {
-        console.error('Error deleting route:', error);
-        this.modalService.showError('Error', 'Failed to delete route');
-      }
-    });
+      });
+    }
   }
 
   // Add method to show edit modal
@@ -307,14 +318,14 @@ export class Administration implements OnInit {
 
   // User Management
   showDeleteUser(user: User) {
-    this.userToDelete = user;
-    this.showDeleteUserModal = true;
+    // Show confirmation dialog first
+    if (confirm(`Are you sure you want to delete ${user.name}? This action cannot be undone.`)) {
+      this.userToDelete = user;
+      this.confirmDeleteUser();
+    }
   }
 
-  closeDeleteUserModal() {
-    this.showDeleteUserModal = false;
-    this.userToDelete = null;
-  }
+
 
   confirmDeleteUser() {
     if (!this.userToDelete) return;
@@ -323,16 +334,16 @@ export class Administration implements OnInit {
       next: (response) => {
         if (response.success) {
           this.modalService.showSuccess('Success', 'User deleted successfully');
-          this.closeDeleteUserModal();
+          this.userToDelete = null;
           this.loadDashboardData(); // Refresh statistics and all lists
           this.loadDataForMenu(this.activeMenu); // Refresh current menu data
         } else {
-          this.modalService.showError('Error', response.message);
+          this.modalService.showError('Error', response.message || 'Failed to delete user');
         }
       },
       error: (error) => {
         console.error('Error deleting user:', error);
-        this.modalService.showError('Error', 'Failed to delete user');
+        this.modalService.showError('Error', 'Failed to delete user. Please try again.');
       }
     });
   }
@@ -375,5 +386,9 @@ export class Administration implements OnInit {
     if (role === 'DRIVER') return 'Driver';
     if (role === 'ADMIN') return 'Admin';
     return role;
+  }
+
+  toggleSidebar(): void {
+    this.sidebarCollapsed = !this.sidebarCollapsed;
   }
 }
