@@ -9,13 +9,12 @@
             <li [class.active]="activeMenu === 0" (click)="setActiveMenu(0)"><a><i class="fas fa-home"></i> first</a></li>
             <li [class.active]="activeMenu === 1" (click)="setActiveMenu(1)"><a><i class="fas fa-users"></i> customer</a></li>
             <li [class.active]="activeMenu === 2" (click)="setActiveMenu(2)"><a><i class="fas fa-car-side"></i> drivers</a></li>
-            <li [class.active]="activeMenu === 3" (click)="setActiveMenu(3)"><a><i class="fas fa-map-marked-alt"></i> Safari</a></li>
             <li [class.active]="activeMenu === 4" (click)="setActiveMenu(4)"><a><i class="fas fa-money-bill-wave"></i> payment</a></li>
             <li [class.active]="activeMenu === 5" (click)="setActiveMenu(5)"><a><i class="fas fa-chart-line"></i> Statistics</a></li>
             <li [class.active]="activeMenu === 6" (click)="setActiveMenu(6)"><a><i class="fas fa-cog"></i> Settings</a></li>
         </ul>
         <div class="logout">
-            <a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            <a (click)="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
         </div>
     </nav>
 
@@ -163,18 +162,6 @@
                             <li>Juma Mwinyi - Online</li>
                         </ul>
                         <button class="btn">Register New Driver</button>
-                    </div>
-                </div>
-                <div *ngSwitchCase="3">
-                    <h2>Safari</h2>
-                    <div class="card">
-                        <h3>Recent Safaris</h3>
-                        <ul>
-                            <li>Posta - Magomeni (Completed)</li>
-                            <li>Bububu - Nungwi (Completed)</li>
-                            <li>Mtopepo - Machui (In Progress)</li>
-                        </ul>
-                        <button class="btn">View All Safaris</button>
                     </div>
                 </div>
                 <div *ngSwitchCase="4">

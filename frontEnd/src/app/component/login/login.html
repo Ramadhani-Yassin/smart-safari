@@ -1,3 +1,4 @@
+<!-- Header -->
 <header class="navbar">
   <div class="logo">🚖 Smart Safari</div>
   <nav>
@@ -7,24 +8,129 @@
   </nav>
 </header>
 
+<!-- Main Content -->
 <div class="auth-container">
-  <div class="card">
-    <h2 class="title">Welcome to Smart Safari 🚖</h2>
-    <p class="subtitle">Book your ride in seconds</p>
-
-    <div class="input-group">
-      <input [(ngModel)]="email" placeholder="📧 Email address" type="email" class="input" required>
-      <input [(ngModel)]="password" placeholder="🔒 Password" type="password" class="input" required>
+  <div class="auth-card">
+    <div class="auth-header">
+      <h1>Welcome Back! 🚖</h1>
+      <p>Sign in to your Smart Safari account</p>
     </div>
 
-    <label class="checkbox">
-      <input type="checkbox" [(ngModel)]="isDriver"> I'm a Driver
-    </label>
+    <!-- General Error Message -->
+    <div class="error-message" *ngIf="generalError">
+      <i class="fas fa-exclamation-circle"></i>
+      {{ generalError }}
+    </div>
 
-    <button class="btn" type="submit" (click)="onSubmit()">Login</button>
+    <form class="auth-form" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <div class="input-wrapper">
+          <i class="fas fa-envelope"></i>
+          <input 
+            id="email"
+            [(ngModel)]="email" 
+            name="email"
+            type="email" 
+            placeholder="Enter your email"
+            (input)="onEmailChange()"
+            [class.error]="emailError"
+            required
+          >
+        </div>
+        <div class="field-error" *ngIf="emailError">
+          <i class="fas fa-exclamation-triangle"></i>
+          {{ emailError }}
+        </div>
+      </div>
 
-    <p class="link-text">Don't have an account? <a (click)="redirectToSignup()">Sign up</a></p>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <div class="input-wrapper">
+          <i class="fas fa-lock"></i>
+          <input 
+            id="password"
+            [(ngModel)]="password" 
+            name="password"
+            type="password" 
+            placeholder="Enter your password"
+            (input)="onPasswordChange()"
+            [class.error]="passwordError"
+            required
+          >
+        </div>
+        <div class="field-error" *ngIf="passwordError">
+          <i class="fas fa-exclamation-triangle"></i>
+          {{ passwordError }}
+        </div>
+      </div>
+
+      <div class="form-options">
+        <label class="checkbox-wrapper">
+          <input type="checkbox" [(ngModel)]="isDriver" name="isDriver">
+          <span class="checkmark"></span>
+          I'm a Driver
+        </label>
+        <a href="#" class="forgot-password">Forgot Password?</a>
+      </div>
+
+      <button type="submit" class="btn-submit" [disabled]="isLoading">
+        <span *ngIf="!isLoading">Sign In</span>
+        <span *ngIf="isLoading">Signing In...</span>
+        <i class="fas fa-arrow-right" *ngIf="!isLoading"></i>
+        <i class="fas fa-spinner fa-spin" *ngIf="isLoading"></i>
+      </button>
+    </form>
+
+    <div class="auth-footer">
+      <p>Don't have an account? <a (click)="redirectToSignup()">Sign up here</a></p>
+    </div>
   </div>
 </div>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-content">
+    <div class="footer-section">
+      <h3>🚖 Smart Safari</h3>
+      <p>Your trusted partner for safe and convenient rides across Zanzibar. Experience the future of transportation with our smart booking platform.</p>
+      <div class="social-links">
+        <a href="#"><i class="fab fa-facebook-f"></i></a>
+        <a href="#"><i class="fab fa-twitter"></i></a>
+        <a href="#"><i class="fab fa-instagram"></i></a>
+        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+      </div>
+    </div>
+    
+    <div class="footer-section">
+      <h3>Quick Links</h3>
+      <a (click)="redirectToHome()">Home</a>
+      <a (click)="redirectToSignup()">Register</a>
+      <a (click)="redirectToSupport()">Support</a>
+      <a href="#">About Us</a>
+      <a href="#">Privacy Policy</a>
+    </div>
+    
+    <div class="footer-section">
+      <h3>Services</h3>
+      <a href="#">Airport Transfers</a>
+      <a href="#">City Tours</a>
+      <a href="#">Beach Trips</a>
+      <a href="#">Business Travel</a>
+      <a href="#">Group Bookings</a>
+    </div>
+    
+    <div class="footer-section">
+      <h3>Contact Info</h3>
+      <p><i class="fas fa-phone"></i> +255 123 456 789</p>
+      <p><i class="fas fa-envelope"></i> info&#64;smartsafari.com</p>
+      <p><i class="fas fa-map-marker-alt"></i> Stone Town, Zanzibar</p>
+    </div>
+  </div>
+  
+  <div class="footer-bottom">
+    <p>&copy; 2025 Smart Safari. All rights reserved. | Designed with ❤️ for Zanzibar</p>
+  </div>
+</footer>
 
 

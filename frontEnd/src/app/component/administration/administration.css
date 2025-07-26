@@ -83,6 +83,12 @@
   font-size: 1.08rem;
   display: flex;
   align-items: center;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.logout a:hover {
+  color: var(--accent);
 }
 
 .logout a i {

@@ -1,85 +1,168 @@
-<!-- Navigation Bar -->
-<header class="navbar">
-  <div class="logo">🚖 Smart Safari</div>
-  <nav>
-    <a (click)="redirectToHome()">Home</a>
-    <a (click)="redirectToLogin()">Login</a>
-    <a (click)="redirectToSupport()">Support</a>
+<div class="home-container">
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="nav-brand">
+      <i class="fas fa-car"></i>
+      <span>Smart Safari</span>
+    </div>
+    <div class="nav-links">
+      <a (click)="redirectToHome()" class="active">Home</a>
+      <a (click)="redirectToLogin()">Login</a>
+      <a (click)="redirectToSignup()">Register</a>
+      <a (click)="redirectToSupport()">Support</a>
+    </div>
   </nav>
-</header>
 
-<!-- Hero Section -->
-<section class="hero">
-  <div class="hero-text">
-    <h1>Ride Smarter with Smart Safari</h1>
-    <p>Your reliable taxi booking service across Zanzibar 🌴</p>
-    <button (click)="redirectToLogin()">Get Started</button>
-  </div>
-</section>
-
-<!-- Services Section -->
-<section class="services">
-  <h2>Our Services</h2>
-  <div class="service-cards">
-    <div class="card" (click)="redirectToLogin()">
-      <h3>🚕 Book a Taxi</h3>
-      <p>Find nearby taxis and request a ride instantly.</p>
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-text">
+        <h1>Welcome to Smart Safari</h1>
+        <p class="hero-subtitle">Travel across Zanzibar with our reliable taxi service.<br> Book your ride in seconds.</p>
+        <div class="hero-stats">
+          <div class="stat">
+            <span class="stat-number">100+</span>
+            <span class="stat-label">Happy Customers</span>
+          </div>
+          <div class="stat">
+            <span class="stat-number">50+</span>
+            <span class="stat-label">Verified Drivers</span>
+          </div>
+          <div class="stat">
+            <span class="stat-number">24/7</span>
+            <span class="stat-label">Support</span>
+          </div>
+        </div>
+        <div class="hero-actions">
+          <button class="btn btn-primary" (click)="redirectToSignup()">
+            <i class="fas fa-user-plus"></i>
+            Get Started
+          </button>
+          <button class="btn btn-secondary" (click)="redirectToLogin()">
+            <i class="fas fa-sign-in-alt"></i>
+            Sign In
+          </button>
+        </div>
+      </div>
+      <div class="hero-image">
+        <div class="image-placeholder">
+          <i class="fas fa-car-side"></i>
+          <div class="floating-card">
+            <div class="card-header">
+              <i class="fas fa-star"></i>
+              <span>4.9 Rating</span>
+            </div>
+            <p>"Amazing service! Fast and reliable."</p>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="card" (click)="redirectToSignup()">
-      <h3>🧍 Become a Driver</h3>
-      <p>Join our platform and earn by driving.</p>
+  </section>
+  
+
+  <!-- Features Section -->
+  <section class="features">
+    <div class="container">
+      <div class="section-header">
+        <h2>Why Choose Smart Safari?</h2>
+        <p>Discover the benefits that make us the preferred choice for transportation in Zanzibar</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-bolt"></i>
+          </div>
+          <h3>Instant Booking</h3>
+          <p>Book your ride in seconds with our streamlined booking process. No waiting, no hassle.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-shield-alt"></i>
+          </div>
+          <h3>Safe & Secure</h3>
+          <p>All our drivers are verified and vehicles are regularly inspected for your safety.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-dollar-sign"></i>
+          </div>
+          <h3>Transparent Pricing</h3>
+          <p>Know your fare upfront with no hidden charges. Pay securely through our platform.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-map-marked-alt"></i>
+          </div>
+          <h3>Real-time Tracking</h3>
+          <p>Track your driver's location in real-time and know exactly when they'll arrive.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-clock"></i>
+          </div>
+          <h3>24/7 Availability</h3>
+          <p>Need a ride at any time? We're available round the clock to serve you.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-heart"></i>
+          </div>
+          <h3>Customer First</h3>
+          <p>Your satisfaction is our priority. We go the extra mile to ensure great service.</p>
+        </div>
+      </div>
     </div>
-    <div class="card" (click)="redirectToLogin()">
-      <h3>📍 Track Ride</h3>
-      <p>Track your trip status and driver's location in real-time.</p>
+  </section>
+
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <div class="footer-brand">
+            <i class="fas fa-car"></i>
+            <span>Smart Safari</span>
+          </div>
+          <p>Your trusted transportation partner in Zanzibar. Safe, reliable, and convenient rides at your fingertips.</p>
+          <div class="social-links">
+            <a href="#"><i class="fab fa-facebook"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-linkedin"></i></a>
+          </div>
+        </div>
+        <div class="footer-section">
+          <h4>Services</h4>
+          <ul>
+            <li><a href="#">Airport Transfers</a></li>
+            <li><a href="#">City Tours</a></li>
+            <li><a href="#">Beach Trips</a></li>
+            <li><a href="#">Business Travel</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h4>Support</h4>
+          <ul>
+            <li><a (click)="redirectToSupport()">Contact Us</a></li>
+            <li><a href="#">Help Center</a></li>
+            <li><a href="#">Safety Tips</a></li>
+            <li><a href="#">Terms of Service</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h4>Contact Info</h4>
+          <div class="contact-info">
+            <p><i class="fas fa-phone"></i> +255 123 456 789</p>
+            <p><i class="fas fa-envelope"></i> info&#64;smartsafari.com</p>
+            <p><i class="fas fa-map-marker-alt"></i> Stone Town, Zanzibar</p>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2025 Smart Safari. All rights reserved.</p>
+      </div>
     </div>
-  </div>
-</section>
-
-<!-- About Section -->
-<section class="about">
-  <h2>Why Choose Smart Safari?</h2>
-  <ul>
-    <li>✅ Easy & Fast Booking</li>
-    <li>✅ Trusted Drivers</li>
-    <li>✅ Affordable Rides</li>
-    <li>✅ 24/7 Customer Support</li>
-  </ul>
-</section>
-
-<!-- Contact Us Section -->
-<section class="contact">
-  <h2>📬 Contact Us</h2>
-  <p>If you have any questions or feedback, we'd love to hear from you!</p>
-
-  <form (ngSubmit)="submitContact()" #contactForm="ngForm">
-    <input
-      type="text"
-      name="name"
-      ngModel
-      placeholder="Your Name"
-      required
-    />
-    <input
-      type="email"
-      name="email"
-      ngModel
-      placeholder="Your Email"
-      required
-    />
-    <textarea
-      name="message"
-      ngModel
-      rows="5"
-      placeholder="Your Message"
-      required
-    ></textarea>
-    <button type="submit">Send Message</button>
-  </form>
-</section>
-
-<!-- Footer -->
-<footer class="footer">
-  <p>&copy; 2025 Smart Safari. All rights reserved.</p>
-</footer>
+  </footer>
+</div>
 

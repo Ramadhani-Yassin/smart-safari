@@ -1,41 +1,182 @@
+<!-- Header -->
 <header class="navbar">
-    <div class="logo">🚖 Smart Safari</div>
-    <nav>
-      <a (click)="redirectToHome()">Home</a>
-      <a (click)="redirectToLogin()">Login</a>
-      <a (click)="redirectToSupport()">Support</a>
-    </nav>
-  </header>
+  <div class="logo">🚖 Smart Safari</div>
+  <nav>
+    <a (click)="redirectToHome()">Home</a>
+    <a (click)="redirectToLogin()">Login</a>
+    <a (click)="redirectToSupport()">Support</a>
+  </nav>
+</header>
 
-
+<!-- Main Content -->
 <div class="support-container">
-  <h2>Contact Support</h2>
-  <p class="subtitle">We're here to help! Reach out to us with any questions, issues, or feedback.</p>
-
-  <div class="contact-details">
-    <div class="contact-item">
-      <span class="icon">📧</span>
-      <span>Email: <a href="mailto:support&#64;smartsafari.com">support&#64;smartsafari.com</a></span>
-    </div>
-    <div class="contact-item">
-      <span class="icon">📞</span>
-      <span>Phone: <a href="tel:+255774444444">+255 774 444 444</a></span>
-    </div>
-    <div class="contact-item">
-      <span class="icon">🏢</span>
-      <span>Address: 123 Safari Lane, Zanzibar, TZ</span>
-    </div>
-    <div class="contact-item">
-      <span class="icon">⏰</span>
-      <span>Hours: 24/7 Support</span>
+  <div class="support-hero">
+    <div class="hero-content">
+      <h1>Need Help? We're Here for You! 🛟</h1>
+      <p>Get in touch with our support team for any questions or assistance</p>
     </div>
   </div>
 
-  <form class="support-form">
-    <h3>Send us a message</h3>
-    <input type="text" placeholder="Your Name" required />
-    <input type="email" placeholder="Your Email" required />
-    <textarea rows="5" placeholder="How can we help you?" required></textarea>
-    <button type="submit">Send Message</button>
-  </form>
+  <div class="support-content">
+    <div class="contact-info-section">
+      <h2>📞 Contact Information</h2>
+      <div class="contact-grid">
+        <div class="contact-card">
+          <div class="contact-icon">
+            <i class="fas fa-phone"></i>
+          </div>
+          <h3>Phone Support</h3>
+          <p>+255 123 456 789</p>
+          <span>Available 24/7</span>
+        </div>
+        
+        <div class="contact-card">
+          <div class="contact-icon">
+            <i class="fas fa-envelope"></i>
+          </div>
+          <h3>Email Support</h3>
+          <p>support&#64;smartsafari.com</p>
+          <span>Response within 2 hours</span>
+        </div>
+        
+        <div class="contact-card">
+          <div class="contact-icon">
+            <i class="fas fa-map-marker-alt"></i>
+          </div>
+          <h3>Office Location</h3>
+          <p>Stone Town, Zanzibar</p>
+          <span>Visit us anytime</span>
+        </div>
+        
+        <div class="contact-card">
+          <div class="contact-icon">
+            <i class="fas fa-comments"></i>
+          </div>
+          <h3>Live Chat</h3>
+          <p>Chat with us online</p>
+          <span>Instant support</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="contact-form-section">
+      <h2>📝 Send us a Message</h2>
+      <div class="contact-form-card">
+        <form class="contact-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="name">Full Name</label>
+              <input type="text" id="name" placeholder="Enter your full name" required>
+            </div>
+            <div class="form-group">
+              <label for="email">Email Address</label>
+              <input type="email" id="email" placeholder="Enter your email" required>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="subject">Subject</label>
+            <select id="subject" required>
+              <option value="">Select a subject</option>
+              <option value="booking">Booking Issue</option>
+              <option value="payment">Payment Problem</option>
+              <option value="driver">Driver Related</option>
+              <option value="technical">Technical Support</option>
+              <option value="general">General Inquiry</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label for="message">Message</label>
+            <textarea id="message" rows="5" placeholder="Describe your issue or question..." required></textarea>
+          </div>
+          
+          <button type="submit" class="btn-submit">
+            <i class="fas fa-paper-plane"></i>
+            Send Message
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <div class="faq-section">
+      <h2>❓ Frequently Asked Questions</h2>
+      <div class="faq-grid">
+        <div class="faq-item">
+          <h3>How do I book a ride?</h3>
+          <p>Simply log in to your account, enter your pickup and destination locations, and confirm your booking. Our drivers will be notified immediately.</p>
+        </div>
+        
+        <div class="faq-item">
+          <h3>What payment methods do you accept?</h3>
+          <p>We accept cash payments, mobile money (M-Pesa, Airtel Money), and credit/debit cards for your convenience.</p>
+        </div>
+        
+        <div class="faq-item">
+          <h3>How can I become a driver?</h3>
+          <p>To become a driver, register with the "Register as Driver" option and complete our verification process. We'll contact you within 24 hours.</p>
+        </div>
+        
+        <div class="faq-item">
+          <h3>What if my driver doesn't show up?</h3>
+          <p>If your driver doesn't arrive within 5 minutes of the scheduled time, please contact our support team immediately for assistance.</p>
+        </div>
+        
+        <div class="faq-item">
+          <h3>Can I cancel my booking?</h3>
+          <p>Yes, you can cancel your booking up to 5 minutes before the scheduled pickup time without any cancellation fees.</p>
+        </div>
+        
+        <div class="faq-item">
+          <h3>Is my ride safe?</h3>
+          <p>Absolutely! All our drivers are verified, licensed, and insured. We also provide real-time tracking for your safety.</p>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-content">
+    <div class="footer-section">
+      <h3>🚖 Smart Safari</h3>
+      <p>Your trusted partner for safe and convenient rides across Zanzibar. Experience the future of transportation with our smart booking platform.</p>
+      <div class="social-links">
+        <a href="#"><i class="fab fa-facebook-f"></i></a>
+        <a href="#"><i class="fab fa-twitter"></i></a>
+        <a href="#"><i class="fab fa-instagram"></i></a>
+        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+      </div>
+    </div>
+    
+    <div class="footer-section">
+      <h3>Quick Links</h3>
+      <a (click)="redirectToHome()">Home</a>
+      <a (click)="redirectToLogin()">Login</a>
+      <a (click)="redirectToSupport()">Support</a>
+      <a href="#">About Us</a>
+      <a href="#">Privacy Policy</a>
+    </div>
+    
+    <div class="footer-section">
+      <h3>Services</h3>
+      <a href="#">Airport Transfers</a>
+      <a href="#">City Tours</a>
+      <a href="#">Beach Trips</a>
+      <a href="#">Business Travel</a>
+      <a href="#">Group Bookings</a>
+    </div>
+    
+    <div class="footer-section">
+      <h3>Contact Info</h3>
+      <p><i class="fas fa-phone"></i> +255 123 456 789</p>
+      <p><i class="fas fa-envelope"></i> info&#64;smartsafari.com</p>
+      <p><i class="fas fa-map-marker-alt"></i> Stone Town, Zanzibar</p>
+    </div>
+  </div>
+  
+  <div class="footer-bottom">
+    <p>&copy; 2025 Smart Safari. All rights reserved. | Designed with ❤️ for Zanzibar</p>
+  </div>
+</footer>

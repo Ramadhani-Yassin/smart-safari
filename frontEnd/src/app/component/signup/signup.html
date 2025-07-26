@@ -1,3 +1,4 @@
+<!-- Header -->
 <header class="navbar">
   <div class="logo">🚖 Smart Safari</div>
   <nav>
@@ -8,24 +9,153 @@
   </nav>
 </header>
 
-<!-- signup form follows -->
+<!-- Main Content -->
 <div class="auth-container">
-  <div class="card">
-    <h2 class="title">Create Account 🚀</h2>
-    <p class="subtitle">Join Smart Safari and ride smarter</p>
-
-    <div class="input-group">
-      <input (ngModel)="name" placeholder="👤 Full Name" type="text" class="input" required>
-      <input (ngModel)="email" placeholder="📧 Email" type="email" class="input" required>
-      <input (ngModel)="password" placeholder="🔒 Password" type="password" class="input" required>
+  <div class="auth-card">
+    <div class="auth-header">
+      <h1>Join Smart Safari! 🚀</h1>
+      <p>Create your account and start your journey</p>
     </div>
 
-    <label class="checkbox">
-      <input type="checkbox" (ngModel)="isDriver"> Registering as a Driver
-    </label>
+    <!-- General Error Message -->
+    <div class="error-message" *ngIf="generalError">
+      <i class="fas fa-exclamation-circle"></i>
+      {{ generalError }}
+    </div>
 
-    <button class="btn" (click)="onSignup()">Sign Up</button>
+    <form class="auth-form" (ngSubmit)="onSignup()">
+      <div class="form-group">
+        <label for="name">Full Name</label>
+        <div class="input-wrapper">
+          <i class="fas fa-user"></i>
+          <input 
+            id="name"
+            [(ngModel)]="name" 
+            name="name"
+            type="text" 
+            placeholder="Enter your full name"
+            (input)="onNameChange()"
+            [class.error]="nameError"
+            required
+          >
+        </div>
+        <div class="field-error" *ngIf="nameError">
+          <i class="fas fa-exclamation-triangle"></i>
+          {{ nameError }}
+        </div>
+      </div>
 
-    <p class="link-text">Already have an account? <a routerLink="/login">Login</a></p>
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <div class="input-wrapper">
+          <i class="fas fa-envelope"></i>
+          <input 
+            id="email"
+            [(ngModel)]="email" 
+            name="email"
+            type="email" 
+            placeholder="Enter your email"
+            (input)="onEmailChange()"
+            [class.error]="emailError"
+            required
+          >
+        </div>
+        <div class="field-error" *ngIf="emailError">
+          <i class="fas fa-exclamation-triangle"></i>
+          {{ emailError }}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <div class="input-wrapper">
+          <i class="fas fa-lock"></i>
+          <input 
+            id="password"
+            [(ngModel)]="password" 
+            name="password"
+            type="password" 
+            placeholder="Create a strong password"
+            (input)="onPasswordChange()"
+            [class.error]="passwordError"
+            required
+          >
+        </div>
+        <div class="field-error" *ngIf="passwordError">
+          <i class="fas fa-exclamation-triangle"></i>
+          {{ passwordError }}
+        </div>
+      </div>
+
+      <div class="form-options">
+        <label class="checkbox-wrapper">
+          <input type="checkbox" [(ngModel)]="isDriver" name="isDriver">
+          <span class="checkmark"></span>
+          Register as a Driver
+        </label>
+        <div class="password-strength">
+          <span class="strength-label">Password Strength:</span>
+          <div class="strength-bar">
+            <div class="strength-fill" [style.width.%]="getPasswordStrength()"></div>
+          </div>
+        </div>
+      </div>
+
+      <button type="submit" class="btn-submit" [disabled]="isLoading">
+        <span *ngIf="!isLoading">Create Account</span>
+        <span *ngIf="isLoading">Creating Account...</span>
+        <i class="fas fa-arrow-right" *ngIf="!isLoading"></i>
+        <i class="fas fa-spinner fa-spin" *ngIf="isLoading"></i>
+      </button>
+    </form>
+
+    <div class="auth-footer">
+      <p>Already have an account? <a (click)="redirectToLogin()">Sign in here</a></p>
+    </div>
   </div>
 </div>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-content">
+    <div class="footer-section">
+      <h3>🚖 Smart Safari</h3>
+      <p>Your trusted partner for safe and convenient rides across Zanzibar. Experience the future of transportation with our smart booking platform.</p>
+      <div class="social-links">
+        <a href="#"><i class="fab fa-facebook-f"></i></a>
+        <a href="#"><i class="fab fa-twitter"></i></a>
+        <a href="#"><i class="fab fa-instagram"></i></a>
+        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+      </div>
+    </div>
+    
+    <div class="footer-section">
+      <h3>Quick Links</h3>
+      <a (click)="redirectToHome()">Home</a>
+      <a (click)="redirectToLogin()">Login</a>
+      <a (click)="redirectToSupport()">Support</a>
+      <a href="#">About Us</a>
+      <a href="#">Privacy Policy</a>
+    </div>
+    
+    <div class="footer-section">
+      <h3>Services</h3>
+      <a href="#">Airport Transfers</a>
+      <a href="#">City Tours</a>
+      <a href="#">Beach Trips</a>
+      <a href="#">Business Travel</a>
+      <a href="#">Group Bookings</a>
+    </div>
+    
+    <div class="footer-section">
+      <h3>Contact Info</h3>
+      <p><i class="fas fa-phone"></i> +255 123 456 789</p>
+      <p><i class="fas fa-envelope"></i> info&#64;smartsafari.com</p>
+      <p><i class="fas fa-map-marker-alt"></i> Stone Town, Zanzibar</p>
+    </div>
+  </div>
+  
+  <div class="footer-bottom">
+    <p>&copy; 2025 Smart Safari. All rights reserved. | Designed with ❤️ for Zanzibar</p>
+  </div>
+</footer>

@@ -1,70 +1,275 @@
 <div class="dashboard">
+  <!-- Sidebar -->
   <aside class="sidebar" [class.collapsed]="sidebarCollapsed">
     <div class="sidebar-brand">
-      <img src="assets/logo.png" alt="SmartSafari Logo">
-      <h2 *ngIf="!sidebarCollapsed">SmartSafari</h2>
+      <div class="logo">
+        <i class="fas fa-car"></i>
+        <h2 *ngIf="!sidebarCollapsed">Smart Safari</h2>
+      </div>
       <button class="collapse-btn" (click)="toggleSidebar()">
         <i class="fas" [ngClass]="sidebarCollapsed ? 'fa-chevron-right' : 'fa-chevron-left'"></i>
       </button>
     </div>
-    <nav>
+    
+    <nav class="sidebar-nav">
       <a *ngFor="let item of menu; let i = index"
          [class.active]="activeMenu === i"
-         (click)="setActiveMenu(i)">
+         (click)="setActiveMenu(i)"
+         class="nav-item">
         <i [class]="item.icon"></i>
         <span *ngIf="!sidebarCollapsed">{{ item.label }}</span>
       </a>
     </nav>
-    <div class="driver-profile" *ngIf="!sidebarCollapsed">
-      <img src="https://i.pravatar.cc/150?img=12" alt="Driver">
-      <div>
-        <strong>{{ driver.name }}</strong>
-        <span><i class="fas fa-star"></i> {{ driver.rating }} ({{ driver.rides }})</span>
+
+    <div class="user-profile" *ngIf="!sidebarCollapsed">
+      <img [src]="user.avatar" alt="User Profile">
+      <div class="profile-info">
+        <strong>{{ user.name }}</strong>
+        <span class="member-since">Member since {{ user.memberSince }}</span>
+        <span class="status" [class.premium]="user.isPremium">● {{ user.isPremium ? 'Premium' : 'Standard' }}</span>
       </div>
+    </div>
+
+    <div class="sidebar-footer">
+      <button class="logout-btn" (click)="logout()">
+        <i class="fas fa-sign-out-alt"></i>
+        <span *ngIf="!sidebarCollapsed">Logout</span>
+      </button>
     </div>
   </aside>
 
-  <main class="main">
-    <section *ngIf="activeMenu === 0">
-      <h2>Bookings</h2>
-      <div *ngFor="let booking of bookings" class="card">
-        <h4>{{ booking.title }}</h4>
-        <p>Status: {{ booking.status }}</p>
-        <p>Pickup: {{ booking.pickup }}</p>
-        <p>Dropoff: {{ booking.dropoff }}</p>
-        <span class="time">{{ booking.time }}</span>
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- Header -->
+    <header class="main-header">
+      <div class="header-left">
+        <h1>{{ getCurrentPageTitle() }}</h1>
+        <p class="breadcrumb">{{ getCurrentPageDescription() }}</p>
       </div>
-      
-    </section>
-    <section *ngIf="activeMenu === 1" class="map">
-      <i class="fas fa-map-marked-alt"></i>
-      <p>Live Map View</p>
-    </section>
-    <section *ngIf="activeMenu === 2">
-      <h2>Ride Status</h2>
-      <div class="card">
-        <h4>Current Ride</h4>
-        <p *ngIf="rideStatus.active">Status: <span class="active">Active</span></p>
-        <p *ngIf="!rideStatus.active">No active ride.</p>
-        <p *ngIf="rideStatus.active">From: {{ rideStatus.from }}<br>To: {{ rideStatus.to }}</p>
-        <p *ngIf="rideStatus.active">Started: {{ rideStatus.startTime }}</p>
-      </div>
-    </section>
-    <section *ngIf="activeMenu === 3">
-      <h2>Profile</h2>
-      <div class="card profile-card">
-        <div>
-          <app-profile></app-profile>
+      <div class="header-right">
+        <div class="quick-actions">
+          <button class="btn btn-primary" (click)="bookRide()">
+            <i class="fas fa-plus"></i> Book New Ride
+          </button>
+        </div>
+        <div class="notifications">
+          <i class="fas fa-bell"></i>
+          <span class="badge" *ngIf="notifications.length > 0">{{ notifications.length }}</span>
         </div>
       </div>
-    </section>
-    <section *ngIf="activeMenu === 4">
-      <h2>Payments</h2>
-      <div *ngFor="let payment of payments" class="card">
-        <h4>{{ payment.date }}</h4>
-        <p>Amount: {{ payment.amount }}</p>
-        <p>Status: <span [ngClass]="payment.status">{{ payment.status | titlecase }}</span></p>
-      </div>
-    </section>
+    </header>
+
+    <!-- Dashboard Content -->
+    <div class="content">
+      <!-- Dashboard Overview -->
+      <section *ngIf="activeMenu === 0" class="dashboard-overview">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon">
+              <i class="fas fa-route"></i>
+            </div>
+            <div class="stat-info">
+              <h3>{{ user.totalRides }}</h3>
+              <p>Total Rides</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">
+              <i class="fas fa-star"></i>
+            </div>
+            <div class="stat-info">
+              <h3>{{ user.rating }}</h3>
+              <p>Rating</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">
+              <i class="fas fa-wallet"></i>
+            </div>
+            <div class="stat-info">
+              <h3>TZS  {{ user.totalSpent }}</h3>
+              <p>Total Spent</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="recent-bookings">
+          <div class="section-header">
+            <h2>📅 Recent Bookings</h2>
+            <span class="booking-count">{{ bookings.length }} bookings</span>
+          </div>
+          <div class="bookings-grid" *ngIf="bookings.length; else noBookings">
+            <div class="booking-card" *ngFor="let booking of bookings">
+              <div class="booking-badge" [class]="booking.status">{{ booking.status }}</div>
+              <div class="booking-header">
+                <div class="booking-info">
+                  <h4>{{ booking.title }}</h4>
+                  <span class="booking-id">#{{ booking.id }}</span>
+                </div>
+                <div class="booking-time">{{ booking.time }}</div>
+              </div>
+              <div class="booking-details">
+                <div class="location">
+                  <i class="fas fa-map-marker-alt pickup"></i>
+                  <span>{{ booking.pickup }}</span>
+                </div>
+                <div class="location">
+                  <i class="fas fa-map-marker-alt destination"></i>
+                  <span>{{ booking.dropoff }}</span>
+                </div>
+                <div class="fare">
+                  <i class="fas fa-dollar-sign"></i>
+                  <span>{{ booking.fare }}</span>
+                </div>
+              </div>
+              <div class="booking-actions">
+                <button class="btn btn-primary" (click)="trackRide(booking.id)" *ngIf="booking.status === 'confirmed'">
+                  <i class="fas fa-location-arrow"></i> Track Ride
+                </button>
+                <button class="btn btn-success" (click)="rateRide(booking.id)" *ngIf="booking.status === 'completed'">
+                  <i class="fas fa-star"></i> Rate Ride
+                </button>
+                <button class="btn btn-info" (click)="viewDetails(booking.id)">
+                  <i class="fas fa-eye"></i> Details
+                </button>
+              </div>
+            </div>
+          </div>
+          <ng-template #noBookings>
+            <div class="no-bookings">
+              <i class="fas fa-calendar-times"></i>
+              <p>No bookings yet</p>
+              <span>Book your first ride to get started</span>
+            </div>
+          </ng-template>
+        </div>
+      </section>
+
+      <!-- Map View -->
+      <section *ngIf="activeMenu === 1" class="map-section">
+        <h2>🗺️ Live Map</h2>
+        <div class="map-container">
+          <div class="map-placeholder">
+            <i class="fas fa-map-marked-alt"></i>
+            <h3>Interactive Map</h3>
+            <p>View nearby drivers and track your rides in real-time</p>
+            <button class="btn btn-primary">Enable Location</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Ride Status -->
+      <section *ngIf="activeMenu === 2" class="ride-status">
+        <h2>🚗 Current Ride Status</h2>
+        <div class="status-container" *ngIf="rideStatus.active; else noActiveRide">
+          <div class="status-card">
+            <div class="status-header">
+              <h3>Ride #{{ rideStatus.id }}</h3>
+              <span class="status-badge active">{{ rideStatus.status }}</span>
+            </div>
+            <div class="driver-info">
+              <img [src]="rideStatus.driverAvatar" alt="Driver">
+              <div>
+                <h4>{{ rideStatus.driverName }}</h4>
+                <span>⭐ {{ rideStatus.driverRating }}</span>
+                <span class="vehicle">{{ rideStatus.vehicle }}</span>
+              </div>
+            </div>
+            <div class="route-info">
+              <div class="location">
+                <i class="fas fa-map-marker-alt pickup"></i>
+                <span>{{ rideStatus.from }}</span>
+              </div>
+              <div class="location">
+                <i class="fas fa-map-marker-alt destination"></i>
+                <span>{{ rideStatus.to }}</span>
+              </div>
+            </div>
+            <div class="ride-actions">
+              <button class="btn btn-primary" (click)="contactDriver()">
+                <i class="fas fa-phone"></i> Contact Driver
+              </button>
+              <button class="btn btn-info" (click)="shareLocation()">
+                <i class="fas fa-share"></i> Share Location
+              </button>
+            </div>
+          </div>
+        </div>
+        <ng-template #noActiveRide>
+          <div class="no-active-ride">
+            <i class="fas fa-car"></i>
+            <p>No active ride at the moment</p>
+            <span>Book a new ride to get started</span>
+          </div>
+        </ng-template>
+      </section>
+
+      <!-- Profile -->
+      <section *ngIf="activeMenu === 3" class="profile">
+        <h2>👤 Profile</h2>
+        <div class="profile-card">
+          <div class="profile-header">
+            <img [src]="user.avatar" alt="User Profile">
+            <div class="profile-info">
+              <h3>{{ user.name }}</h3>
+              <p>{{ user.email }}</p>
+              <p>{{ user.phone }}</p>
+            </div>
+          </div>
+          <div class="profile-details">
+            <div class="detail">
+              <span class="label">Member Since</span>
+              <span class="value">{{ user.memberSince }}</span>
+            </div>
+            <div class="detail">
+              <span class="label">Total Rides</span>
+              <span class="value">{{ user.totalRides }}</span>
+            </div>
+            <div class="detail">
+              <span class="label">Rating</span>
+              <span class="value">⭐ {{ user.rating }}</span>
+            </div>
+            <div class="detail">
+              <span class="label">Reward Points</span>
+              <span class="value">{{ user.rewardPoints }}</span>
+            </div>
+          </div>
+          <div class="profile-actions">
+            <button class="btn btn-primary">Edit Profile</button>
+            <button class="btn btn-secondary">Change Password</button>
+            <button class="btn btn-info">View History</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Payments -->
+      <section *ngIf="activeMenu === 4" class="payments">
+        <h2>💰 Payment History</h2>
+        <div class="payments-overview">
+          <div class="payment-stats">
+            <div class="stat">
+              <span class="label">This Month</span>
+              <span class="value">TZS  {{ monthlySpent }}</span>
+            </div>
+            <div class="stat">
+              <span class="label">Total Spent</span>
+              <span class="value">TZS  {{ user.totalSpent }}</span>
+            </div>
+          </div>
+          <div class="payments-list">
+            <div class="payment-card" *ngFor="let payment of payments">
+              <div class="payment-header">
+                <h4>{{ payment.date }}</h4>
+                <span class="payment-status" [class]="payment.status">{{ payment.status }}</span>
+              </div>
+              <div class="payment-details">
+                <span class="amount">{{ payment.amount }}</span>
+                <span class="description">{{ payment.description }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
   </main>
 </div>
