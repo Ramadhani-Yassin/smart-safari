@@ -544,10 +544,11 @@ input:checked + .slider:before {
 }
 
 .request-badge.pending {
-  background: linear-gradient(90deg, var(--accent4) 0%, #ff8f00 100%);
-  color: #1a237e;
+  background: #e0e0e0;
+  color: #2979ff;
   font-weight: 700;
-  text-shadow: 0 1px 1px rgba(255,255,255,0.3);
+  border: 2px solid #bdbdbd;
+  text-shadow: none;
 }
 
 .request-header {
@@ -791,9 +792,10 @@ input:checked + .slider:before {
 }
 
 .status.pending {
-  background: #fff3e0;
-  color: #ef6c00;
+  background: #e0e0e0;
+  color: #2979ff;
   font-weight: 700;
+  border: 2px solid #bdbdbd;
 }
 
 .status.cancelled {

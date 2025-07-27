@@ -394,7 +394,12 @@
 .status.completed { background: #00e676; }
 .status.in-progress { background: #ffd600; color: #1a237e; }
 .status.cancelled { background: #ff5252; }
-.status.pending { background: #2979ff; }
+.status.pending { 
+  background: #e0e0e0; 
+  color: #2979ff; 
+  font-weight: 700; 
+  border: 2px solid #bdbdbd; 
+}
 
 /* Route Management Styles */
 .card-header {
@@ -723,8 +728,10 @@
 }
 
 .status.pending {
-  background: #fff3cd;
-  color: #856404;
+  background: #e0e0e0;
+  color: #2979ff;
+  font-weight: 700;
+  border: 2px solid #bdbdbd;
 }
 
 .status.cancelled {

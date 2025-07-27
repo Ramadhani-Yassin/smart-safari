@@ -28,7 +28,7 @@ public class BookingService {
     private RouteRepository routeRepository;
 
     public List<Booking> getAllBookings() {
-        return bookingRepository.findAll();
+        return bookingRepository.findAllOrderByCreatedAtDesc();
     }
 
     public Optional<Booking> getBookingById(Long id) {
@@ -122,32 +122,32 @@ public class BookingService {
     }
 
     public List<Booking> getBookingsByCustomerId(Long customerId) {
-        return bookingRepository.findByCustomerId(customerId);
+        return bookingRepository.findByCustomerIdOrderByCreatedAtDesc(customerId);
     }
 
     public List<Booking> getPendingBookings() {
-        return bookingRepository.findByStatus(Booking.Status.PENDING);
+        return bookingRepository.findByStatusOrderByCreatedAtDesc(Booking.Status.PENDING);
     }
 
     public List<Booking> getBookingsByStatus(Booking.Status status) {
-        return bookingRepository.findByStatus(status);
+        return bookingRepository.findByStatusOrderByCreatedAtDesc(status);
     }
 
     public List<Booking> getBookingsByStatus(String status) {
         try {
             Booking.Status bookingStatus = Booking.Status.valueOf(status.toUpperCase());
-            return bookingRepository.findByStatus(bookingStatus);
+            return bookingRepository.findByStatusOrderByCreatedAtDesc(bookingStatus);
         } catch (IllegalArgumentException e) {
             throw new RuntimeException("Invalid status: " + status);
         }
     }
 
     public List<Booking> getBookingsForDriver(Long driverId) {
-        return bookingRepository.findByDriverId(driverId);
+        return bookingRepository.findByDriverIdOrderByCreatedAtDesc(driverId);
     }
 
     public List<Booking> getPendingBookingsForDrivers() {
-        return bookingRepository.findPendingBookingsWithoutDriver();
+        return bookingRepository.findPendingBookingsWithoutDriverOrderByCreatedAtDesc();
     }
 
     public Booking acceptBooking(Long bookingId, User driver) {

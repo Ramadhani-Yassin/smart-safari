@@ -15,23 +15,52 @@ import java.util.List;
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Long> {
     
-    // Find bookings by status
+    // Find all bookings ordered by creation date (newest first)
+    @Query("SELECT b FROM Booking b ORDER BY b.createdAt DESC")
+    List<Booking> findAllOrderByCreatedAtDesc();
+    
+    // Find bookings by status ordered by creation date (newest first)
+    @Query("SELECT b FROM Booking b WHERE b.status = :status ORDER BY b.createdAt DESC")
+    List<Booking> findByStatusOrderByCreatedAtDesc(@Param("status") Booking.Status status);
+    
+    // Find bookings by customer ID ordered by creation date (newest first)
+    @Query("SELECT b FROM Booking b WHERE b.customer.id = :customerId ORDER BY b.createdAt DESC")
+    List<Booking> findByCustomerIdOrderByCreatedAtDesc(@Param("customerId") Long customerId);
+    
+    // Find bookings by driver ID ordered by creation date (newest first)
+    @Query("SELECT b FROM Booking b WHERE b.driver.id = :driverId ORDER BY b.createdAt DESC")
+    List<Booking> findByDriverIdOrderByCreatedAtDesc(@Param("driverId") Long driverId);
+    
+    // Find bookings by route ID ordered by creation date (newest first)
+    @Query("SELECT b FROM Booking b WHERE b.route.id = :routeId ORDER BY b.createdAt DESC")
+    List<Booking> findByRouteIdOrderByCreatedAtDesc(@Param("routeId") Long routeId);
+    
+    // Find pending bookings (no driver assigned) ordered by creation date (newest first)
+    @Query("SELECT b FROM Booking b WHERE b.status = 'PENDING' AND b.driver IS NULL ORDER BY b.createdAt DESC")
+    List<Booking> findPendingBookingsWithoutDriverOrderByCreatedAtDesc();
+    
+    // Find bookings by status and driver ordered by creation date (newest first)
+    @Query("SELECT b FROM Booking b WHERE b.status = :status AND b.driver.id = :driverId ORDER BY b.createdAt DESC")
+    List<Booking> findByStatusAndDriverIdOrderByCreatedAtDesc(@Param("status") Booking.Status status, @Param("driverId") Long driverId);
+
+    // Legacy methods for backward compatibility (keeping them but they're deprecated)
+    @Deprecated
     List<Booking> findByStatus(Booking.Status status);
     
-    // Find bookings by customer ID
+    @Deprecated
     List<Booking> findByCustomerId(Long customerId);
     
-    // Find bookings by driver ID
+    @Deprecated
     List<Booking> findByDriverId(Long driverId);
     
-    // Find bookings by route ID
+    @Deprecated
     List<Booking> findByRouteId(Long routeId);
     
-    // Find pending bookings (no driver assigned)
+    @Deprecated
     @Query("SELECT b FROM Booking b WHERE b.status = 'PENDING' AND b.driver IS NULL")
     List<Booking> findPendingBookingsWithoutDriver();
     
-    // Find bookings by status and driver
+    @Deprecated
     List<Booking> findByStatusAndDriverId(Booking.Status status, Long driverId);
 
     @Query("UPDATE Booking b SET b.driver = :driver, b.status = :status WHERE b.id = :bookingId")
